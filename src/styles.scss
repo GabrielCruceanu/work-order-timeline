@@ -1,1 +1,19 @@
 /* You can add global styles to this file, and also import other style files */
+
+// Abstracts - forward must come first
+@forward "./styles/abstracts/variables";
+@forward "./styles/abstracts/mixins";
+@forward "./styles/abstracts/functions";
+
+// Base
+@use "./styles/base/reset";
+@use "./styles/base/typography";
+
+// Components
+// Component-specific styles will be imported here as needed
+
+// Utilities
+@use "./styles/utilities/helpers";
+
+// Font import (CSS @import for external URLs - must come after @forward/@use)
+@import url("https://naologic-com-assets.naologic.com/fonts/circular-std/circular-std.css");
