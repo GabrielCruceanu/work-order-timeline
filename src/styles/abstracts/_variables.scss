@@ -1,0 +1,52 @@
+/**
+ * SCSS Variables
+ * Global design tokens and variables
+ */
+
+// Colors
+$primary-color: #5659ff;
+$primary-color-shade: #3e40db;
+$secondary-color: #aaafff;
+$success-color: #28a745;
+$warning-color: #ffc107;
+$danger-color: #dc3545;
+$info-color: #17a2b8;
+
+// Work Order Status Colors
+$status-open: #5659ff; // Blue
+$status-in-progress: #6f42c1; // Blue/Purple
+$status-complete: #28a745; // Green
+$status-blocked: #ffc107; // Yellow/Orange
+
+// Text Colors
+$text-label: #687196;
+$text-disabled: #d8dceb;
+
+// Stroke Colors
+$stroke-color: #f0f1f5;
+
+// Typography
+$font-family-primary: "Circular-Std", sans-serif;
+$font-size-base: 16px;
+$font-weight-normal: 400;
+$font-weight-medium: 500;
+$font-weight-bold: 700;
+
+// Spacing
+$spacing-xs: 4px;
+$spacing-sm: 8px;
+$spacing-md: 16px;
+$spacing-lg: 24px;
+$spacing-xl: 32px;
+$spacing-xxl: 48px;
+
+// Breakpoints
+$breakpoint-sm: 576px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 992px;
+$breakpoint-xl: 1200px;
+
+// Z-index layers
+$z-index-dropdown: 1000;
+$z-index-panel: 1050;
+$z-index-modal: 1100;

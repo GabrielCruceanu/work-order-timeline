@@ -1,59 +1,143 @@
-# WorkOrderTimeline
+# Work Order Timeline
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.0.0.
+An interactive timeline component for a manufacturing ERP system that allows users to visualize, create, and edit work orders across multiple work centers.
 
-## Development server
+## Features
 
-To start a local development server, run:
+- **Timeline Grid** with Day/Week/Month zoom levels
+- **Work Order Bars** with status indicators (Open, In Progress, Complete, Blocked)
+- **Create/Edit Panel** with form validation and overlap detection
+- **Interactive Timeline** - Click to create, edit, and delete work orders
+- **Overlap Detection** - Prevents scheduling conflicts on the same work center
+
+## Technology Stack
+
+- **Angular 21.0.0** - Standalone components with signals
+- **TypeScript** - Strict mode
+- **SCSS** - Styled with BEM methodology
+- **Reactive Forms** - FormGroup, FormControl, Validators
+- **ng-select** - Dropdown components
+- **@ng-bootstrap/ng-bootstrap** - Date picker (ngb-datepicker)
+
+## Prerequisites
+
+- Node.js 18+ and npm
+- Angular CLI 21.0.0+
+
+## Setup
+
+1. **Install dependencies:**
 
 ```bash
+npm install
+```
+
+2. **Start the development server:**
+
+```bash
+npm start
+# or
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+3. **Open your browser:**
 
-## Code scaffolding
+Navigate to `http://localhost:4200/`
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## Development
+
+### Available Scripts
+
+- `npm start` - Start development server
+- `npm run build` - Build for production
+- `npm test` - Run unit tests
+- `npm run format` - Format code with Prettier
+- `npm run format:check` - Check code formatting
+
+### Code Formatting
+
+This project uses [Prettier](https://prettier.io/) for code formatting. Configuration is in `.prettierrc`.
 
 ```bash
-ng generate component component-name
+# Format all files
+npm run format
+
+# Check formatting without changes
+npm run format:check
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Project Structure
 
-```bash
-ng generate --help
 ```
+src/app/
+├── core/                    # Singleton services, models, utils
+│   ├── models/              # TypeScript interfaces
+│   ├── services/            # Business logic services
+│   └── utils/               # Helper functions
+├── shared/                  # Shared components, directives, pipes
+│   ├── components/          # Atomic components (atoms/molecules/organisms)
+│   ├── constants/           # App-wide constants
+│   ├── directives/          # Shared directives
+│   └── pipes/               # Shared pipes
+├── features/                # Feature modules
+│   └── timeline/            # Timeline feature
+│       ├── components/      # Feature-specific components
+│       ├── services/        # Feature services
+│       └── models/           # Feature models
+└── styles/                  # Global styles
+    ├── abstracts/           # Variables, mixins, functions
+    ├── base/                # Reset, typography
+    ├── components/          # Component styles
+    └── utilities/           # Helper classes
+```
+
+## Architecture
+
+### Design Patterns
+
+- **Atomic Design** - Components organized as atoms → molecules → organisms
+- **BEM Methodology** - CSS class naming convention
+- **Standalone Components** - No NgModules, all components are standalone
+- **Signals** - Reactive state management using Angular signals
+- **OnPush Change Detection** - Default strategy for performance
+
+### Key Principles
+
+- Single Responsibility Principle
+- Dependency Injection via `inject()` function
+- Signal-based APIs (`input()`, `output()`, `model()`)
+- New control flow syntax (`@if`, `@for`, `@switch`)
+
+## Sample Data
+
+The application includes sample data:
+
+- **5 Work Centers**: Extrusion Line A, CNC Machine 1, Assembly Station, Quality Control, Packaging Line
+- **8 Work Orders**: Across different centers with all status types represented
 
 ## Building
-
-To build the project run:
 
 ```bash
 ng build
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+The build artifacts will be stored in the `dist/` directory.
 
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+## Testing
 
 ```bash
 ng test
 ```
 
-## Running end-to-end tests
+Runs unit tests via [Karma](https://karma-runner.github.io).
 
-For end-to-end (e2e) testing, run:
+## Design Reference
 
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+- **Sketch File**: https://www.sketch.com/s/d56a77de-9753-45a8-af7a-d93a42276667
+- **Font**: Circular Std (loaded from CDN)
 
 ## Additional Resources
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- [Angular Documentation](https://angular.dev)
+- [Angular CLI Overview](https://angular.dev/tools/cli)
+- [Prettier Documentation](https://prettier.io/docs/en/)

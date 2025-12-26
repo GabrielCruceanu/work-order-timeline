@@ -1,0 +1,48 @@
+/**
+ * SCSS Mixins
+ * Reusable mixins for common patterns
+ */
+
+@use "variables" as *;
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin transition($property: all, $duration: 0.3s, $easing: ease) {
+  transition: $property $duration $easing;
+}
+
+@mixin hover-lift {
+  @include transition(transform);
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+}
+
+@mixin panel-slide-in($direction: right) {
+  @include transition(transform);
+
+  @if $direction == right {
+    transform: translateX(100%);
+
+    &.open {
+      transform: translateX(0);
+    }
+  }
+}
+
+@mixin truncate-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

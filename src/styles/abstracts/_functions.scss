@@ -1,0 +1,27 @@
+/**
+ * SCSS Functions
+ * Reusable functions for calculations
+ */
+
+@use "variables" as *;
+
+/**
+ * Convert pixels to rem
+ */
+@function rem($pixels, $base: 16px) {
+  @return ($pixels / $base) * 1rem;
+}
+
+/**
+ * Get status color
+ */
+@function status-color($status) {
+  $colors: (
+    "open": $status-open,
+    "in-progress": $status-in-progress,
+    "complete": $status-complete,
+    "blocked": $status-blocked,
+  );
+
+  @return map-get($colors, $status);
+}
