@@ -1,0 +1,336 @@
+// Stage 5: Panel Base Styling
+.panel-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 999;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.work-order-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 400px;
+  height: 100vh;
+  background: #ffffff;
+  box-shadow: -4px 0 12px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 0.3s ease-in-out;
+
+  &--open {
+    transform: translateX(0);
+  }
+
+  &__header {
+    position: relative;
+    padding: 24px;
+    border-bottom: 1px solid #e9ecef;
+    flex-shrink: 0;
+  }
+
+  &__title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #212529;
+    margin: 0;
+    padding-right: 40px;
+  }
+
+  &__close {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    width: 32px;
+    height: 32px;
+    background: none;
+    border: none;
+    font-size: 2rem;
+    line-height: 1;
+    color: #6c757d;
+    cursor: pointer;
+    transition: color 0.15s ease;
+
+    &:hover {
+      color: #212529;
+    }
+  }
+
+  &__content {
+    flex: 1;
+    padding: 24px;
+    overflow-y: auto;
+  }
+
+  &__footer {
+    padding: 16px 24px;
+    border-top: 1px solid #e9ecef;
+    background: #ffffff;
+    flex-shrink: 0;
+  }
+
+  &__actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+  }
+}
+
+// Stage 6: Form Field Styling
+.form-field {
+  margin-bottom: 20px;
+
+  &__label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #495057;
+    margin-bottom: 8px;
+  }
+
+  &__input {
+    width: 100%;
+    height: 40px;
+    padding: 8px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    color: #212529;
+    background: #ffffff;
+    transition:
+      border-color 0.15s ease,
+      box-shadow 0.15s ease;
+
+    &::placeholder {
+      color: #adb5bd;
+    }
+
+    &:focus {
+      border-color: #5659ff;
+      box-shadow: 0 0 0 3px rgba(86, 89, 255, 0.1);
+      outline: none;
+    }
+
+    &--error {
+      border-color: #dc3545;
+      background: #fff5f5;
+    }
+  }
+
+  &__error {
+    display: block;
+    font-size: 0.75rem;
+    color: #dc3545;
+    margin-top: 4px;
+  }
+}
+
+.alert {
+  padding: 12px 16px;
+  border-radius: 6px;
+  font-size: 0.875rem;
+
+  &--error {
+    background: #fff5f5;
+    color: #dc3545;
+    border: 1px solid #f5c6cb;
+  }
+}
+
+.datepicker-wrapper {
+  width: 100%;
+}
+
+// Stage 7: ng-select Custom Styling
+::ng-deep .custom-ng-select {
+  .ng-select-container {
+    min-height: 40px;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    font-size: 0.875rem;
+
+    &:hover {
+      border-color: #adb5bd;
+    }
+
+    .ng-value-container {
+      padding: 4px 12px;
+
+      .ng-placeholder {
+        color: #adb5bd;
+      }
+
+      .ng-input {
+        top: 4px;
+        padding: 0;
+      }
+    }
+  }
+
+  &.ng-select-focused {
+    .ng-select-container {
+      border-color: #5659ff;
+      box-shadow: 0 0 0 3px rgba(86, 89, 255, 0.1);
+    }
+  }
+
+  &.ng-select-opened {
+    .ng-select-container {
+      border-color: #5659ff;
+    }
+  }
+
+  .ng-dropdown-panel {
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-top: 4px;
+
+    .ng-dropdown-panel-items {
+      .ng-option {
+        padding: 10px 12px;
+        font-size: 0.875rem;
+        color: #212529;
+
+        &.ng-option-marked {
+          background: #f1f3f5;
+        }
+
+        &.ng-option-selected {
+          background: #e7f5ff;
+          color: #5659ff;
+          font-weight: 500;
+        }
+      }
+    }
+  }
+}
+
+.status-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  &__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+}
+
+// Stage 8: ng-bootstrap Datepicker Styling
+::ng-deep .ngb-dp {
+  &-header {
+    background: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+    padding: 8px;
+  }
+
+  &-month-name {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #212529;
+  }
+
+  &-navigation-chevron {
+    border-color: #495057;
+  }
+
+  &-weekday {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #6c757d;
+  }
+
+  &-day {
+    width: 32px;
+    height: 32px;
+    line-height: 32px;
+    font-size: 0.875rem;
+    color: #212529;
+    border-radius: 4px;
+
+    &:hover {
+      background: #f1f3f5;
+    }
+
+    &.bg-primary {
+      background: #5659ff !important;
+      color: #ffffff !important;
+    }
+
+    &.selected {
+      background: #5659ff;
+      color: #ffffff;
+    }
+
+    &.today {
+      border: 1px solid #5659ff;
+    }
+
+    &.disabled {
+      color: #adb5bd;
+      cursor: not-allowed;
+    }
+  }
+}
+
+// Stage 9: Button Styling
+.btn {
+  height: 40px;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  border: none;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  &--primary {
+    background: #5659ff;
+    color: #ffffff;
+
+    &:hover:not(:disabled) {
+      background: #4c51bf;
+    }
+  }
+
+  &--secondary {
+    background: #ffffff;
+    color: #495057;
+    border: 1px solid #ced4da;
+
+    &:hover {
+      background: #f8f9fa;
+    }
+  }
+
+  &--danger {
+    background: #dc3545;
+    color: #ffffff;
+
+    &:hover {
+      background: #c82333;
+    }
+  }
+}

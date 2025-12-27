@@ -187,12 +187,52 @@ type WorkOrderStatus = 'open' | 'in-progress' | 'complete' | 'blocked';
 - Use a mode flag: `'create' | 'edit'`
 - Reset form when opening in create mode
 - Populate form when opening in edit mode
+- Use `effect()` to populate form when panel opens (reacts to `isOpen()` signal)
+- Form controls use NgbDateStruct for datepicker fields (converted from/to ISO strings)
+
+### Reactive Forms with ng-bootstrap Datepicker
+
+**Implementation Pattern**:
+
+- Form controls for date fields use `FormControl<NgbDateStruct | null>`
+- Convert ISO date strings to NgbDateStruct when populating form: `{ year, month, day }`
+- Convert NgbDateStruct back to ISO string on submit: `new Date(year, month - 1, day).toISOString().split('T')[0]`
+- Use `formControlName` with `ngbDatepicker` directive on readonly input
+- Datepicker toggles via `#ref="ngbDatepicker"` and `(click)="ref.toggle()"`
+
+**Date Conversion Utilities**:
+
+```typescript
+// ISO to NgbDateStruct
+private isoToNgbDate(isoDate: string): NgbDateStruct | null {
+  const date = new Date(isoDate);
+  return { year: date.getFullYear(), month: date.getMonth() + 1, day: date.getDate() };
+}
+
+// NgbDateStruct to ISO
+private ngbDateToISO(ngbDate: NgbDateStruct | null): string {
+  const date = new Date(ngbDate.year, ngbDate.month - 1, ngbDate.day);
+  return date.toISOString().split('T')[0];
+}
+```
+
+### Reactive Forms with ng-select
+
+**Implementation Pattern**:
+
+- Use `formControlName` directly with ng-select component
+- Bind items array, `bindLabel`, and `bindValue` properties
+- Use custom templates (`ng-label-tmp`, `ng-option-tmp`) for custom display (e.g., status with colored dots)
+- Works seamlessly with reactive forms - no additional configuration needed
 
 ### Overlap Detection
 
 - Check if new/edited order overlaps with existing orders on same work center
 - Exclude the order being edited from overlap check
 - Show error message and prevent save if overlap detected
+- Overlap algorithm: `startDate < orderEnd && endDate > orderStart`
+- Error displayed as alert component above form fields
+- Overlap check runs on form submit before save
 
 ### Zoom Level Handling
 
@@ -287,11 +327,18 @@ trackColumn(column: DateColumn): string {
 
 ### WorkOrderPanel
 
-- Slide-out panel from right
-- Contains reactive form
-- Handles create vs edit mode
-- Validates form and checks overlaps
-- Emits save/cancel events
+- Slide-out panel from right (400px width, fixed position)
+- Contains reactive form with 5 fields: name, status, workCenterId, startDate, endDate
+- Handles create vs edit mode via `mode` signal input
+- Validates form (required, minLength) and checks overlaps
+- Emits save/cancel/delete events
+- Panel state managed via `isOpen` signal input
+- Form populated via `effect()` when panel opens
+- Date conversion between ISO strings (data model) and NgbDateStruct (form controls)
+- Uses ng-bootstrap datepicker and ng-select for form fields
+- Custom styling with BEM methodology
+- Panel overlay backdrop with fade-in animation
+- Slide-in/out animation using CSS transform (translateX)
 
 ## Data Flow
 
