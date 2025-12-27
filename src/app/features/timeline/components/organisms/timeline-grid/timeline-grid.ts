@@ -9,6 +9,7 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
+import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 import { WorkCenterDocument } from '@/app/core/models/work-center.model';
 import { WorkOrderDocument } from '@/app/core/models/work-order.model';
 import { ZoomLevel } from '@/app/shared/constants/app.constants';
@@ -30,7 +31,7 @@ import { WorkOrderBarComponent } from '@/app/features/timeline/components/molecu
 @Component({
   selector: 'app-timeline-grid',
   standalone: true,
-  imports: [CommonModule, WorkOrderBarComponent],
+  imports: [CommonModule, WorkOrderBarComponent, NgbTooltipModule],
   templateUrl: './timeline-grid.html',
   styleUrls: ['./timeline-grid.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -115,6 +116,9 @@ export class TimelineGridComponent {
   trackColumn(column: DateColumn): string {
     return `${this.zoomLevel()}-${column.date.getTime()}-${column.width}`;
   }
+
+  // Tooltip text
+  readonly emptySlotTooltip = 'Click to create work order';
 
   /**
    * Sync vertical scroll between left and right panels
@@ -267,6 +271,96 @@ export class TimelineGridComponent {
 
   onWorkOrderClick(workOrder: WorkOrderDocument) {
     this.workOrderSelected.emit(workOrder);
+  }
+
+  /**
+   * Handle click on timeline row (empty cell)
+   */
+  onTimelineRowClick(event: MouseEvent, workCenter: WorkCenterDocument) {
+    // Check if click was on work order bar (ignore if so)
+    const target = event.target as HTMLElement;
+    if (target.closest('app-work-order-bar')) {
+      return; // Don't create if clicking on existing bar
+    }
+
+    // Calculate click position
+    const clickData = this.calculateClickPosition(event, workCenter);
+
+    // Emit event
+    this.emptySlotClicked.emit({
+      workCenterId: clickData.workCenterId,
+      date: clickData.date,
+    });
+  }
+
+  /**
+   * Calculate click position and determine date
+   */
+  private calculateClickPosition(
+    event: MouseEvent,
+    workCenter: WorkCenterDocument
+  ): { workCenterId: string; date: Date } {
+    // Get click position relative to timeline row
+    const timelineRowElement = event.currentTarget as HTMLElement;
+    const rect = timelineRowElement.getBoundingClientRect();
+    const clickX = event.clientX - rect.left;
+
+    // Calculate which date was clicked based on zoom level
+    const date = this.pixelToDate(clickX);
+
+    return {
+      workCenterId: workCenter.docId,
+      date,
+    };
+  }
+
+  /**
+   * Convert pixel position to date based on zoom level
+   * Handles edge cases: boundaries, week/month snapping
+   */
+  private pixelToDate(pixelX: number): Date {
+    const columnWidth = this.columnWidth();
+    const zoomLevel = this.zoomLevel();
+    const startDate = this.dateRange().start;
+    const endDate = this.dateRange().end;
+
+    let date: Date;
+
+    switch (zoomLevel) {
+      case 'day': {
+        // Each column = 1 day = 120px
+        const daysFromStart = Math.floor(pixelX / columnWidth);
+        date = addDays(startDate, daysFromStart);
+        break;
+      }
+
+      case 'week': {
+        // Each column = 1 week = 180px
+        const weeksFromStart = Math.floor(pixelX / columnWidth);
+        date = addWeeks(startDate, weeksFromStart);
+        // Snap to start of week
+        date = startOfWeek(date);
+        break;
+      }
+
+      case 'month': {
+        // Each column = 1 month = 180px
+        const monthsFromStart = Math.floor(pixelX / columnWidth);
+        date = addMonths(startDate, monthsFromStart);
+        // Snap to start of month
+        date = startOfMonth(date);
+        break;
+      }
+
+      default:
+        date = new Date();
+    }
+
+    // Clamp to visible range
+    if (date < startDate) date = new Date(startDate);
+    if (date > endDate) date = new Date(endDate);
+
+    return date;
   }
 
   /**

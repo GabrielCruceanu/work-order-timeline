@@ -1,4 +1,4 @@
-import { Component, effect, inject, signal } from '@angular/core';
+import { Component, HostListener, inject, signal } from '@angular/core';
 import { TimelineHeaderComponent } from './components/organisms/timeline-header/timeline-header';
 import { TimelineGridComponent } from './components/organisms/timeline-grid/timeline-grid';
 import { WorkOrderPanelComponent } from './components/organisms/work-order-panel/work-order-panel';
@@ -21,6 +21,7 @@ import { WorkOrderDocument } from '@/app/core/models/work-order.model';
         [workOrders]="workOrderService.workOrders()"
         [zoomLevel]="zoomLevel()"
         (workOrderEdit)="onWorkOrderEdit($event)"
+        (emptySlotClicked)="onEmptyCellClick($event)"
       />
       <app-work-order-panel
         [isOpen]="isPanelOpen()"
@@ -75,6 +76,20 @@ export class TimelineComponent {
     this.isPanelOpen.set(true);
   }
 
+  // Handle empty cell click from grid
+  onEmptyCellClick(data: { workCenterId: string; date: Date }) {
+    // Set prefilled data for create panel
+    this.prefilledPanelData.set({
+      workCenterId: data.workCenterId,
+      date: data.date,
+    });
+
+    // Open panel in create mode
+    this.panelMode.set('create');
+    this.selectedWorkOrder.set(null);
+    this.isPanelOpen.set(true);
+  }
+
   // Handle save
   onWorkOrderSave(data: Partial<WorkOrderDocument>) {
     if (this.panelMode() === 'create' && data.data) {
@@ -102,6 +117,46 @@ export class TimelineComponent {
     this.isPanelOpen.set(false);
     this.selectedWorkOrder.set(null);
     this.prefilledPanelData.set(null);
+  }
+
+  @HostListener('document:keydown', ['$event'])
+  onKeyDown(event: KeyboardEvent) {
+    // Don't trigger if typing in input field
+    const target = event.target as HTMLElement;
+    if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
+      return;
+    }
+
+    // 'N' key - New work order
+    if (event.key === 'n' || event.key === 'N') {
+      if (!this.isPanelOpen()) {
+        this.openCreatePanelWithDefaults();
+        event.preventDefault();
+      }
+    }
+
+    // 'ESC' key - Close panel
+    if (event.key === 'Escape') {
+      if (this.isPanelOpen()) {
+        this.onPanelClose();
+        event.preventDefault();
+      }
+    }
+  }
+
+  private openCreatePanelWithDefaults() {
+    // Default to first work center and today
+    const firstWorkCenter = this.workCenterService.workCenters()[0];
+    if (!firstWorkCenter) return;
+
+    this.prefilledPanelData.set({
+      workCenterId: firstWorkCenter.docId,
+      date: new Date(),
+    });
+
+    this.panelMode.set('create');
+    this.selectedWorkOrder.set(null);
+    this.isPanelOpen.set(true);
   }
 
   private generateId(): string {

@@ -61,20 +61,38 @@
     position: relative;
   }
 
-  &__timeline-row {
+  &__row {
     height: 60px;
     border-bottom: 1px solid #e9ecef;
-    transition: background-color 0.15s ease;
-    position: relative;
+  }
 
-    &:hover {
-      background-color: #f1f3f5;
+  &__timeline-row {
+    position: relative;
+    display: flex;
+    height: 100%;
+    transition: background 0.15s ease;
+
+    &--hoverable {
+      cursor: pointer;
+
+      &:hover {
+        background: rgba(241, 243, 245, 0.5);
+      }
     }
   }
 
-  &__bars-container {
-    position: relative;
+  &__cell {
     height: 100%;
+    border-right: 1px solid #e9ecef;
+    flex-shrink: 0;
+  }
+
+  &__bars-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     pointer-events: none; // Allow click-through to timeline
 
     // Re-enable pointer events on bars

@@ -293,6 +293,60 @@ trackColumn(column: DateColumn): string {
 - Ensures Angular creates new DOM elements when properties change
 - Prevents stale style bindings
 
+### Empty Cell Click Handling Pattern
+
+**Implementation Pattern**:
+
+- Timeline rows have clickable area with cells for each date column
+- Bars container is absolutely positioned on top with `pointer-events: none`
+- Bars re-enable pointer events: `app-work-order-bar { pointer-events: auto; }`
+- Click handler checks if click target is within work order bar using `target.closest('app-work-order-bar')`
+- Calculate click date from pixel position using `getBoundingClientRect()` and `pixelToDate()` algorithm
+
+**Click Position to Date Calculation**:
+
+```typescript
+private pixelToDate(pixelX: number): Date {
+  const columnWidth = this.columnWidth();
+  const zoomLevel = this.zoomLevel();
+  const startDate = this.dateRange().start;
+  const endDate = this.dateRange().end;
+
+  let date: Date;
+
+  switch (zoomLevel) {
+    case 'day':
+      const daysFromStart = Math.floor(pixelX / columnWidth);
+      date = addDays(startDate, daysFromStart);
+      break;
+    case 'week':
+      const weeksFromStart = Math.floor(pixelX / columnWidth);
+      date = addWeeks(startDate, weeksFromStart);
+      date = startOfWeek(date); // Snap to week start
+      break;
+    case 'month':
+      const monthsFromStart = Math.floor(pixelX / columnWidth);
+      date = addMonths(startDate, monthsFromStart);
+      date = startOfMonth(date); // Snap to month start
+      break;
+  }
+
+  // Clamp to visible range
+  if (date < startDate) date = new Date(startDate);
+  if (date > endDate) date = new Date(endDate);
+
+  return date;
+}
+```
+
+**Key Points**:
+
+- Use `getBoundingClientRect()` to get relative position (accounts for scroll automatically)
+- Floor division to determine which column was clicked
+- Snap to week/month start for appropriate zoom levels
+- Clamp to visible date range boundaries
+- Pass calculated date to panel via prefilled data signal
+
 ## Component Responsibilities
 
 ### TimelineComponent
@@ -312,6 +366,10 @@ trackColumn(column: DateColumn): string {
 - **Scroll synchronization**: ViewChild references to sync vertical scroll between panels
 - **Date column rendering**: Computed signals for date range and columns based on zoom level
 - **Today indicator**: Absolute positioned vertical line with computed pixel offset
+- **Empty cell click handling**: Click handler on timeline rows, calculates date from pixel position
+- **Visual hover feedback**: Hover state with rgba(241, 243, 245, 0.5) background and pointer cursor
+- **NgbTooltip integration**: Tooltip on hover with 300ms delay for better UX
+- **Click prevention**: Checks if click target is work order bar before emitting empty cell click
 
 ### WorkOrderBar
 
@@ -339,6 +397,7 @@ trackColumn(column: DateColumn): string {
 - Custom styling with BEM methodology
 - Panel overlay backdrop with fade-in animation
 - Slide-in/out animation using CSS transform (translateX)
+- Accepts `prefilledData` signal input for work center and date when creating from timeline click
 
 ## Data Flow
 
