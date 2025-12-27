@@ -1,19 +1,23 @@
-import { ZOOM_LEVELS, ZoomLevel } from '@/app/shared/constants/app.constants';
-import { Component, inject, output, signal } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { TimelineService } from '@/app/features/timeline/services/timeline.service';
-import { NgSelectModule } from '@ng-select/ng-select';
+import { ZoomLevel } from '@/app/shared/constants/app.constants';
+import { Component, input, output } from '@angular/core';
+import { ZoomControlComponent } from '../../molecules/zoom-control/zoom-control';
 
 @Component({
   selector: 'app-timeline-header',
   standalone: true,
-  imports: [NgSelectModule],
+  imports: [ZoomControlComponent],
   templateUrl: './timeline-header.html',
   styleUrls: ['./timeline-header.scss'],
 })
 export class TimelineHeaderComponent {
-  private readonly timelineService = inject(TimelineService);
+  // Signal inputs
+  currentZoom = input.required<ZoomLevel>();
 
-  readonly zoomLevels = signal<ZoomLevel[]>(ZOOM_LEVELS);
-  readonly timescaleChanged = output<ZoomLevel>();
+  // Signal outputs
+  zoomChanged = output<ZoomLevel>();
+
+  // Methods
+  onZoomChanged(zoom: ZoomLevel) {
+    this.zoomChanged.emit(zoom);
+  }
 }

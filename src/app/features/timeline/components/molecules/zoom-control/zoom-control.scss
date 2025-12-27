@@ -1,0 +1,118 @@
+.zoom-control {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  &__label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #212529;
+    white-space: nowrap;
+  }
+
+  &__select {
+    width: 140px;
+
+    // Override ng-select default styles to match design
+    ::ng-deep {
+      .ng-select {
+        .ng-select-container {
+          height: 36px;
+          min-height: 36px;
+          padding: 8px 12px;
+          background: #ffffff;
+          border: 1px solid #dee2e6;
+          border-radius: 6px;
+          font-size: 0.875rem;
+          font-weight: 500;
+          color: #212529;
+          transition: all 0.15s ease;
+
+          &:hover {
+            border-color: #adb5bd;
+            background: #f8f9fa;
+          }
+
+          .ng-value-container {
+            padding: 0;
+
+            .ng-value {
+              color: #212529;
+              font-size: 0.875rem;
+              font-weight: 500;
+            }
+
+            .ng-placeholder {
+              color: #6c757d;
+              font-size: 0.875rem;
+            }
+          }
+
+          .ng-arrow-wrapper {
+            width: 20px;
+            padding-right: 0;
+
+            .ng-arrow {
+              border-color: #6c757d transparent transparent;
+              border-style: solid;
+              border-width: 5px 4px 0;
+              height: 0;
+              width: 0;
+              transition: transform 0.2s ease;
+            }
+          }
+        }
+
+        &.ng-select-opened {
+          .ng-select-container {
+            border-color: #5659ff;
+            box-shadow: 0 0 0 3px rgba(86, 89, 255, 0.1);
+
+            .ng-arrow-wrapper .ng-arrow {
+              transform: rotate(180deg);
+            }
+          }
+        }
+
+        &.ng-select-focused:not(.ng-select-opened) {
+          .ng-select-container {
+            border-color: #5659ff;
+            box-shadow: 0 0 0 3px rgba(86, 89, 255, 0.1);
+          }
+        }
+      }
+
+      .ng-dropdown-panel {
+        background: #ffffff;
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        margin-top: 4px;
+        z-index: 100;
+
+        .ng-dropdown-panel-items {
+          .ng-option {
+            padding: 10px 12px;
+            font-size: 0.875rem;
+            color: #212529;
+            transition: background 0.15s ease;
+
+            &:hover {
+              background: #f1f3f5;
+            }
+
+            &.ng-option-selected {
+              background: #e7f5ff;
+              color: #5659ff;
+              font-weight: 500;
+            }
+
+            &.ng-option-marked {
+              background: #f1f3f5;
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,14 @@
+<div class="zoom-control">
+  <label class="zoom-control__label">Timescale</label>
+  <ng-select
+    [items]="zoomOptions"
+    [(ngModel)]="selectedOption"
+    (ngModelChange)="onZoomChange($event)"
+    bindLabel="label"
+    [searchable]="false"
+    [clearable]="false"
+    class="zoom-control__select"
+    aria-label="Select timeline zoom level"
+  >
+  </ng-select>
+</div>

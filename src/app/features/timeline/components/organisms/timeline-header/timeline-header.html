@@ -1,11 +1,8 @@
-<div class="timeline-header">
-  <div class="timeline-header__container">
-    <div class="timeline-header__title">
-      <h1>Work Orders</h1>
-    </div>
-    <div class="timeline-header__controls">
-      <label>Timescale</label>
-      <ng-select [items]="zoomLevels()" (change)="timescaleChanged.emit($event.value)" />
-    </div>
+<header class="timeline-header">
+  <div class="timeline-header__left">
+    <h1 class="timeline-header__title">Work Order Schedule</h1>
   </div>
-</div>
+  <div class="timeline-header__right">
+    <app-zoom-control [currentZoom]="currentZoom()" (zoomChanged)="onZoomChanged($event)" />
+  </div>
+</header>

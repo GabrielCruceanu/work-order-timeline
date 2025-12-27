@@ -53,7 +53,9 @@ export class TimelineGridComponent {
   });
 
   gridColumns = computed<DateColumn[]>(() => {
-    return this.generateDateColumns(this.dateRange(), this.zoomLevel());
+    const zoom = this.zoomLevel();
+    const range = this.dateRange();
+    return this.generateDateColumns(range, zoom);
   });
 
   todayPosition = computed<number | null>(() => {
@@ -72,6 +74,11 @@ export class TimelineGridComponent {
   // ViewChild references for scroll synchronization
   leftPanelRef = viewChild<ElementRef<HTMLDivElement>>('leftPanel');
   rightContentRef = viewChild<ElementRef<HTMLDivElement>>('rightContent');
+
+  // Track function for @for loop to ensure proper updates when zoom changes
+  trackColumn(column: DateColumn): string {
+    return `${this.zoomLevel()}-${column.date.getTime()}-${column.width}`;
+  }
 
   /**
    * Sync vertical scroll between left and right panels
@@ -148,7 +155,7 @@ export class TimelineGridComponent {
     // Column widths based on zoom level
     const columnWidths: Record<ZoomLevel, number> = {
       day: 120,
-      week: 140,
+      week: 180, // Increased from 140 to accommodate full week labels
       month: 180,
     };
 
@@ -176,7 +183,8 @@ export class TimelineGridComponent {
           const weekNumber = getWeekNumber(currentDate);
           const startLabel = formatDate(currentDate, 'MMM DD');
           const endLabel = formatDate(weekEnd, 'MMM DD');
-          const label = `Week ${weekNumber} (${startLabel} - ${endLabel})`;
+          // More compact format: "W48: Nov 24 - Nov 30"
+          const label = `W${weekNumber}: ${startLabel} - ${endLabel}`;
           columns.push({
             date: new Date(currentDate),
             label,
@@ -211,7 +219,7 @@ export class TimelineGridComponent {
   private calculateTodayPosition(today: Date, startDate: Date, zoomLevel: ZoomLevel): number {
     const columnWidths: Record<ZoomLevel, number> = {
       day: 120,
-      week: 140,
+      week: 180, // Increased from 140 to match column width
       month: 180,
     };
 
