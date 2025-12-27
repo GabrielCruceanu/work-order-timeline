@@ -36,6 +36,7 @@ export class ZoomControlComponent {
 
   // Zoom options constant
   readonly zoomOptions: ZoomOption[] = [
+    { value: 'hour', label: 'Hour' },
     { value: 'day', label: 'Day' },
     { value: 'week', label: 'Week' },
     { value: 'month', label: 'Month' },

@@ -1,0 +1,64 @@
+// _colors.scss - Design System Colors
+
+// Primary
+$color-primary: #5659ff;
+$color-primary-light: rgba(86, 89, 255, 0.1);
+$color-primary-dark: #4245cc;
+
+// Status Colors
+$color-status-open: #00bcd4;
+$color-status-open-bg: rgba(0, 188, 212, 0.1);
+$color-status-open-border: rgba(0, 188, 212, 0.2);
+
+$color-status-in-progress: #6366f1;
+$color-status-in-progress-bg: rgba(99, 102, 241, 0.1);
+$color-status-in-progress-border: rgba(99, 102, 241, 0.2);
+
+$color-status-complete: #10b981;
+$color-status-complete-bg: rgba(16, 185, 129, 0.1);
+$color-status-complete-border: rgba(16, 185, 129, 0.2);
+
+$color-status-blocked: #f59e0b;
+$color-status-blocked-bg: rgba(245, 158, 11, 0.1);
+$color-status-blocked-border: rgba(245, 158, 11, 0.2);
+
+// Neutrals
+$color-gray-50: #f9fafb;
+$color-gray-100: #f3f4f6;
+$color-gray-200: #e5e7eb;
+$color-gray-300: #d1d5db;
+$color-gray-400: #9ca3af;
+$color-gray-500: #6b7280;
+$color-gray-600: #4b5563;
+$color-gray-700: #374151;
+$color-gray-800: #1f2937;
+$color-gray-900: #111827;
+
+// Semantic Colors
+$color-text-primary: $color-gray-900;
+$color-text-secondary: $color-gray-500;
+$color-text-placeholder: $color-gray-400;
+
+$color-border: $color-gray-200;
+$color-border-focus: $color-primary;
+
+$color-background: #ffffff;
+$color-background-hover: $color-gray-50;
+$color-background-overlay: rgba(0, 0, 0, 0.5);
+
+// Shadows
+$shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+$shadow-md:
+  0 4px 6px -1px rgba(0, 0, 0, 0.1),
+  0 2px 4px -1px rgba(0, 0, 0, 0.06);
+$shadow-lg:
+  0 10px 15px -3px rgba(0, 0, 0, 0.1),
+  0 4px 6px -2px rgba(0, 0, 0, 0.05);
+$shadow-xl:
+  0 20px 25px -5px rgba(0, 0, 0, 0.1),
+  0 10px 10px -5px rgba(0, 0, 0, 0.04);
+$shadow-panel:
+  rgba(216, 220, 235, 1) 0 5px 15px 0,
+  rgba(200, 207, 233, 1) 0 2.5px 3px -1.5px,
+  rgba(216, 220, 235, 1) 0 4.5px 5px -1px;
+$shadow-dropdown: 0 4px 12px rgba(0, 0, 0, 0.1);

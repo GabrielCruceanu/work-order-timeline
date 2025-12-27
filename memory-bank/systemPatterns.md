@@ -528,3 +528,157 @@ src/app/
 6. Create panel initial state
 7. Create panel active text field
 8. Create panel status dropdown
+
+## Design System (Phase 7)
+
+### Color System
+
+**Location**: `src/styles/abstracts/_colors.scss`
+
+**Primary Colors**:
+
+- `$color-primary`: #5659ff (Primary blue for buttons, selected states)
+- `$color-primary-light`: rgba(86, 89, 255, 0.1) (Current month background)
+- `$color-primary-dark`: #4245cc (Hover state)
+
+**Status Colors**:
+
+- Open: #00bcd4 (Cyan) with rgba(0, 188, 212, 0.1) background
+- In Progress: #6366f1 (Indigo) with rgba(99, 102, 241, 0.1) background
+- Complete: #10b981 (Green) with rgba(16, 185, 129, 0.1) background
+- Blocked: #f59e0b (Orange) with rgba(245, 158, 11, 0.1) background
+
+**Neutral Colors**:
+
+- Gray scale: 50, 100, 200, 300, 400, 500, 600, 700, 800, 900
+- Text: primary ($gray-900), secondary ($gray-500), placeholder ($gray-400)
+- Borders: $gray-200
+- Backgrounds: white, hover ($gray-50)
+
+**Shadows**:
+
+- `$shadow-sm`: 0 1px 2px 0 rgba(0, 0, 0, 0.05)
+- `$shadow-md`: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)
+- `$shadow-lg`: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)
+- `$shadow-xl`: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)
+- `$shadow-panel`: -4px 0 20px rgba(0, 0, 0, 0.15) (Left shadow for panel)
+- `$shadow-dropdown`: 0 4px 12px rgba(0, 0, 0, 0.1)
+
+### Typography System
+
+**Font Family**: Circular Std (with fallbacks)
+
+**Font Sizes**:
+
+- `$font-size-xs`: 0.75rem (12px) - small labels, badges
+- `$font-size-sm`: 0.875rem (14px) - body text, form inputs
+- `$font-size-base`: 1rem (16px) - base text
+- `$font-size-lg`: 1.125rem (18px) - section headings
+- `$font-size-xl`: 1.5rem (24px) - page headings
+- `$font-size-2xl`: 2rem (32px) - large headings
+
+**Font Weights**:
+
+- `$font-weight-normal`: 400
+- `$font-weight-medium`: 500
+- `$font-weight-semibold`: 600
+- `$font-weight-bold`: 700
+
+**Line Heights**:
+
+- `$line-height-tight`: 1.25
+- `$line-height-normal`: 1.5
+- `$line-height-relaxed`: 1.75
+
+### Spacing System
+
+**Base Unit**: 4px
+
+**Spacing Scale**:
+
+- `$space-1`: 0.25rem (4px)
+- `$space-2`: 0.5rem (8px)
+- `$space-3`: 0.75rem (12px)
+- `$space-4`: 1rem (16px)
+- `$space-5`: 1.25rem (20px)
+- `$space-6`: 1.5rem (24px)
+- `$space-8`: 2rem (32px)
+- `$space-10`: 2.5rem (40px)
+- `$space-12`: 3rem (48px)
+
+**Usage**: Always use spacing variables, never hardcode px values
+
+### Border Radius System
+
+- `$radius-sm`: 4px (Form fields, badges)
+- `$radius-md`: 6px (Buttons, cards)
+- `$radius-lg`: 8px (Panels, modals)
+- `$radius-full`: 9999px (Pills, badges)
+
+### Transition System
+
+- `$transition-fast`: 0.1s ease
+- `$transition-base`: 0.15s ease (standard)
+- `$transition-slow`: 0.3s ease
+
+**Common Combinations**:
+
+- `$transition-colors`: color, background-color, border-color (0.15s ease)
+- `$transition-transform`: transform (0.15s ease)
+- `$transition-opacity`: opacity (0.15s ease)
+- `$transition-all`: all (0.15s ease)
+
+### Component Specifications
+
+**Buttons**:
+
+- Height: 40px
+- Padding: 10px 20px ($space-2 $space-5)
+- Border radius: 6px ($radius-md)
+- Font size: 14px ($font-size-sm)
+- Font weight: 500 ($font-weight-medium)
+- Transition: 0.15s ease
+
+**Form Fields**:
+
+- Height: 44px
+- Padding: 12px 16px ($space-3 $space-4)
+- Border: 1px solid $color-border
+- Border radius: 6px ($radius-md)
+- Font size: 14px ($font-size-sm)
+- Focus: Blue border (#5659ff) with 3px shadow
+- Placeholder color: $color-text-placeholder
+
+**Status Badges**:
+
+- Padding: 4px 8px ($space-1 $space-2)
+- Border radius: 9999px ($radius-full)
+- Font size: 12px ($font-size-xs)
+- Font weight: 500 ($font-weight-medium)
+- Background: Status color at 10% opacity
+- Border: Status color at 20% opacity
+
+**Panel**:
+
+- Width: 480px
+- Padding: 32px ($space-8)
+- Form field gaps: 20px ($space-5)
+- Button spacing: 12px ($space-3)
+- Shadow: Left shadow ($shadow-panel)
+
+**Timeline Grid**:
+
+- Work center column: 200px fixed width
+- Row height: 60px
+- Cell borders: 1px solid $color-border
+- Current month: Blue background highlight ($color-primary-light)
+- Header height: 48px
+
+**Work Order Bars**:
+
+- Height: 44px (within 60px row)
+- Padding: 8px 12px ($space-2 $space-3)
+- Border radius: 6px ($radius-md)
+- Background: Status color at 10% opacity
+- Border: Status color at 20% opacity
+- Hover: Status-colored shadow, z-index increase

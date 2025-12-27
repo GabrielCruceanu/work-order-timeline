@@ -1,0 +1,20 @@
+<div class="form-field">
+  @if (label()) {
+    <label class="form-field__label" [for]="id()">
+      {{ label() }}
+    </label>
+  }
+  <input
+    [id]="id()"
+    [type]="type()"
+    class="form-field__input"
+    [class.form-field__input--error]="hasError()"
+    [formControl]="control"
+    [placeholder]="placeholder()"
+    [disabled]="disabled()"
+    [autocomplete]="autocomplete()"
+  />
+  @if (displayError()) {
+    <span class="form-field__error">{{ displayError() }}</span>
+  }
+</div>

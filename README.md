@@ -4,11 +4,15 @@ An interactive timeline component for a manufacturing ERP system that allows use
 
 ## Features
 
-- **Timeline Grid** with Day/Week/Month zoom levels
+- **Timeline Grid** with Day/Week/Month/Hour zoom levels
 - **Work Order Bars** with status indicators (Open, In Progress, Complete, Blocked)
 - **Create/Edit Panel** with form validation and overlap detection
 - **Interactive Timeline** - Click to create, edit, and delete work orders
 - **Overlap Detection** - Prevents scheduling conflicts on the same work center
+- **"Today" Button** - Quick navigation to today's date with smooth scrolling
+- **Keyboard Shortcuts** - `N` to create new work order, `ESC` to close panel
+- **localStorage Persistence** - Work orders and work centers persist across browser sessions
+- **Tooltips** - Helpful hints on hover for better UX
 
 ## Technology Stack
 
@@ -115,6 +119,8 @@ The application includes sample data:
 - **5 Work Centers**: Extrusion Line A, CNC Machine 1, Assembly Station, Quality Control, Packaging Line
 - **8 Work Orders**: Across different centers with all status types represented
 
+Sample data is automatically loaded on first launch. Once you create or modify work orders, they are saved to localStorage and will persist across browser sessions.
+
 ## Building
 
 ```bash
@@ -135,6 +141,19 @@ Runs unit tests via [Karma](https://karma-runner.github.io).
 
 - **Sketch File**: https://www.sketch.com/s/d56a77de-9753-45a8-af7a-d93a42276667
 - **Font**: Circular Std (loaded from CDN)
+
+## Keyboard Shortcuts
+
+- **`N`** - Create a new work order (opens panel with default values)
+- **`ESC`** - Close the work order panel
+
+## Data Persistence
+
+Work orders and work centers are automatically saved to browser localStorage. This means:
+
+- Your data persists across browser sessions
+- No server required - everything is stored locally
+- To reset to sample data, clear your browser's localStorage for this domain
 
 ## Additional Resources
 

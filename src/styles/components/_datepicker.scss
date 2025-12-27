@@ -1,0 +1,59 @@
+@use "../abstracts/variables" as *;
+
+// ng-bootstrap Datepicker Global Styling
+// Note: Datepicker popup is rendered outside component tree, so styles must be global
+.ngb-dp {
+  &-header {
+    background: $color-gray-50;
+    border-bottom: 1px solid $color-border;
+    padding: $space-2;
+  }
+
+  &-month-name {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $color-text-primary;
+  }
+
+  &-navigation-chevron {
+    border-color: $color-gray-600;
+  }
+
+  &-weekday {
+    font-size: $font-size-xs;
+    font-weight: $font-weight-medium;
+    color: $color-text-secondary;
+  }
+
+  &-day {
+    width: 32px;
+    height: 32px;
+    line-height: 32px;
+    font-size: $font-size-sm;
+    color: $color-text-primary;
+    border-radius: $radius-sm;
+
+    &:hover {
+      background: $color-background-hover;
+    }
+
+    &.bg-primary {
+      background: $color-primary !important;
+      color: $color-background !important;
+    }
+
+    &.selected {
+      background: $color-primary;
+      color: $color-background;
+    }
+
+    &.today {
+      border: 1px solid $color-primary;
+    }
+
+    &.disabled {
+      color: $color-text-placeholder;
+      cursor: not-allowed;
+    }
+  }
+}

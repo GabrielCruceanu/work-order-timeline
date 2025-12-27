@@ -1,0 +1,15 @@
+<button
+  [type]="type()"
+  class="btn"
+  [class.btn--primary]="variant() === 'primary'"
+  [class.btn--secondary]="variant() === 'secondary'"
+  [class.btn--danger]="variant() === 'danger'"
+  [class]="buttonClass()"
+  [disabled]="disabled() || loading()"
+  (click)="onButtonClick()"
+>
+  <ng-content />
+  @if (loading()) {
+    <span>...</span>
+  }
+</button>

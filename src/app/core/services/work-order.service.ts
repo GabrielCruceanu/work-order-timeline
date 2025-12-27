@@ -1,116 +1,80 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, effect, signal } from '@angular/core';
 import { WorkOrderDocument, WorkOrderStatus } from '../models/work-order.model';
+import { generateSampleWorkOrders } from '../mocks/work-orders.mock';
 
 /**
- * Service for managing work orders
+ * Service for managing work orders with localStorage persistence
  */
 @Injectable({
   providedIn: 'root',
 })
 export class WorkOrderService {
+  // localStorage key for work orders
+  private readonly STORAGE_KEY = 'work-order-timeline:workOrders';
+
   // Signal-based state management
   private _workOrders = signal<WorkOrderDocument[]>([]);
   readonly workOrders = this._workOrders.asReadonly();
 
+  constructor() {
+    // Load from localStorage on initialization
+    this.loadFromStorage();
+
+    // Automatically save to localStorage whenever work orders change
+    effect(() => {
+      const orders = this._workOrders();
+      this.saveToStorage(orders);
+    });
+  }
+
+  /**
+   * Load work orders from localStorage
+   * Falls back to sample data if localStorage is empty or invalid
+   */
+  private loadFromStorage(): void {
+    try {
+      const stored = localStorage.getItem(this.STORAGE_KEY);
+      if (stored) {
+        const parsed = JSON.parse(stored) as WorkOrderDocument[];
+        // Validate that parsed data is an array
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          this._workOrders.set(parsed);
+          return;
+        }
+      }
+    } catch (error) {
+      console.warn('Failed to load work orders from localStorage:', error);
+    }
+
+    // Fallback to sample data if localStorage is empty or invalid
+    this.initializeSampleData();
+  }
+
+  /**
+   * Save work orders to localStorage
+   */
+  private saveToStorage(orders: WorkOrderDocument[]): void {
+    try {
+      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(orders));
+    } catch (error) {
+      console.error('Failed to save work orders to localStorage:', error);
+    }
+  }
+
   /**
    * Initialize with sample work orders
+   * This will also trigger localStorage save via effect()
    */
   initializeSampleData(): void {
-    const today = new Date();
-    const formatDate = (date: Date): string => date.toISOString().split('T')[0];
-
-    const sampleWorkOrders: WorkOrderDocument[] = [
-      {
-        docId: 'wo-001',
-        docType: 'workOrder',
-        data: {
-          name: 'Order Alpha',
-          workCenterId: 'wc-001',
-          status: 'complete',
-          startDate: formatDate(new Date(today.getTime() - 14 * 24 * 60 * 60 * 1000)),
-          endDate: formatDate(new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000)),
-        },
-      },
-      {
-        docId: 'wo-002',
-        docType: 'workOrder',
-        data: {
-          name: 'Order Beta',
-          workCenterId: 'wc-002',
-          status: 'in-progress',
-          startDate: formatDate(new Date(today.getTime() - 3 * 24 * 60 * 60 * 1000)),
-          endDate: formatDate(new Date(today.getTime() + 4 * 24 * 60 * 60 * 1000)),
-        },
-      },
-      {
-        docId: 'wo-003',
-        docType: 'workOrder',
-        data: {
-          name: 'Order Gamma',
-          workCenterId: 'wc-003',
-          status: 'open',
-          startDate: formatDate(new Date(today.getTime() + 5 * 24 * 60 * 60 * 1000)),
-          endDate: formatDate(new Date(today.getTime() + 12 * 24 * 60 * 60 * 1000)),
-        },
-      },
-      {
-        docId: 'wo-004',
-        docType: 'workOrder',
-        data: {
-          name: 'Order Delta',
-          workCenterId: 'wc-004',
-          status: 'blocked',
-          startDate: formatDate(new Date(today.getTime() - 5 * 24 * 60 * 60 * 1000)),
-          endDate: formatDate(new Date(today.getTime() + 2 * 24 * 60 * 60 * 1000)),
-        },
-      },
-      {
-        docId: 'wo-005',
-        docType: 'workOrder',
-        data: {
-          name: 'Order Epsilon',
-          workCenterId: 'wc-001',
-          status: 'open',
-          startDate: formatDate(new Date(today.getTime() + 1 * 24 * 60 * 60 * 1000)),
-          endDate: formatDate(new Date(today.getTime() + 8 * 24 * 60 * 60 * 1000)),
-        },
-      },
-      {
-        docId: 'wo-006',
-        docType: 'workOrder',
-        data: {
-          name: 'Order Zeta',
-          workCenterId: 'wc-003',
-          status: 'in-progress',
-          startDate: formatDate(new Date(today.getTime() - 2 * 24 * 60 * 60 * 1000)),
-          endDate: formatDate(new Date(today.getTime() + 5 * 24 * 60 * 60 * 1000)),
-        },
-      },
-      {
-        docId: 'wo-007',
-        docType: 'workOrder',
-        data: {
-          name: 'Order Eta',
-          workCenterId: 'wc-005',
-          status: 'complete',
-          startDate: formatDate(new Date(today.getTime() - 10 * 24 * 60 * 60 * 1000)),
-          endDate: formatDate(new Date(today.getTime() - 3 * 24 * 60 * 60 * 1000)),
-        },
-      },
-      {
-        docId: 'wo-008',
-        docType: 'workOrder',
-        data: {
-          name: 'Order Theta',
-          workCenterId: 'wc-002',
-          status: 'open',
-          startDate: formatDate(new Date(today.getTime() + 10 * 24 * 60 * 60 * 1000)),
-          endDate: formatDate(new Date(today.getTime() + 17 * 24 * 60 * 60 * 1000)),
-        },
-      },
-    ];
-
+    const sampleWorkOrders = generateSampleWorkOrders();
     this._workOrders.set(sampleWorkOrders);
+  }
+
+  /**
+   * Clear all work orders and reset to sample data
+   */
+  resetToSampleData(): void {
+    this.initializeSampleData();
   }
 
   /**

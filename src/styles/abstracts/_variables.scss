@@ -3,42 +3,65 @@
  * Global design tokens and variables
  */
 
-// Colors
-$primary-color: #5659ff;
-$primary-color-shade: #3e40db;
-$secondary-color: #aaafff;
-$success-color: #28a745;
-$warning-color: #ffc107;
-$danger-color: #dc3545;
-$info-color: #17a2b8;
+// Forward color system so it's available to files that @use this file
+@forward "colors";
 
-// Work Order Status Colors
-$status-open: #5659ff; // Blue
-$status-in-progress: #6f42c1; // Blue/Purple
-$status-complete: #28a745; // Green
-$status-blocked: #ffc107; // Yellow/Orange
-
-// Text Colors
-$text-label: #687196;
-$text-disabled: #d8dceb;
-
-// Stroke Colors
-$stroke-color: #f0f1f5;
+// Import color system for use in this file
+@use "colors" as *;
 
 // Typography
-$font-family-primary: "Circular-Std", sans-serif;
-$font-size-base: 16px;
+$font-family-base:
+  "Circular-Std",
+  -apple-system,
+  BlinkMacSystemFont,
+  "Segoe UI",
+  sans-serif;
+
+$font-size-xs: 0.75rem; // 12px
+$font-size-sm: 0.875rem; // 14px
+$font-size-base: 1rem; // 16px
+$font-size-lg: 1.125rem; // 18px
+$font-size-xl: 1.5rem; // 24px
+$font-size-2xl: 2rem; // 32px
+
 $font-weight-normal: 400;
 $font-weight-medium: 500;
+$font-weight-semibold: 600;
 $font-weight-bold: 700;
 
-// Spacing
-$spacing-xs: 4px;
-$spacing-sm: 8px;
-$spacing-md: 16px;
-$spacing-lg: 24px;
-$spacing-xl: 32px;
-$spacing-xxl: 48px;
+$line-height-tight: 1.25;
+$line-height-normal: 1.5;
+$line-height-relaxed: 1.75;
+
+// Spacing (4px base unit)
+$space-1: 0.25rem; // 4px
+$space-2: 0.5rem; // 8px
+$space-3: 0.75rem; // 12px
+$space-4: 1rem; // 16px
+$space-5: 1.25rem; // 20px
+$space-6: 1.5rem; // 24px
+$space-8: 2rem; // 32px
+$space-10: 2.5rem; // 40px
+$space-12: 3rem; // 48px
+
+// Border Radius
+$radius-sm: 4px;
+$radius-md: 6px;
+$radius-lg: 8px;
+$radius-full: 9999px;
+
+// Transitions
+$transition-fast: 0.1s ease;
+$transition-base: 0.15s ease;
+$transition-slow: 0.3s ease;
+
+$transition-colors:
+  color $transition-base,
+  background-color $transition-base,
+  border-color $transition-base;
+$transition-transform: transform $transition-base;
+$transition-opacity: opacity $transition-base;
+$transition-all: all $transition-base;
 
 // Breakpoints
 $breakpoint-sm: 576px;

@@ -17,14 +17,15 @@ export const WORK_ORDER_STATUSES = [
 /**
  * Timeline zoom levels
  */
-export type ZoomLevel = 'day' | 'week' | 'month';
+export type ZoomLevel = 'hour' | 'day' | 'week' | 'month';
 
-export const ZOOM_LEVELS: ZoomLevel[] = ['day', 'week', 'month'];
+export const ZOOM_LEVELS: ZoomLevel[] = ['hour', 'day', 'week', 'month'];
 
 /**
  * Default date range buffers for each zoom level
  */
 export const ZOOM_LEVEL_BUFFERS = {
+  hour: 1, // ±1 day
   day: 14, // ±2 weeks
   week: 60, // ±2 months
   month: 180, // ±6 months

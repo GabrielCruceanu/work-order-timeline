@@ -1,9 +1,42 @@
+@use "sass:color";
+@use "../../../../../styles/abstracts/variables" as *;
+
 .status-badge {
-  display: inline-block;
-  padding: 4px 8px;
-  border-radius: 12px;
-  font-size: 0.75rem;
-  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  padding: $space-1 $space-2; // 4px 8px
+  border-radius: $radius-sm;
+  font-size: $font-size-xs; // 12px
+  font-weight: $font-weight-medium; // 500
+  line-height: $line-height-tight;
   white-space: nowrap;
   text-transform: capitalize;
+
+  // Open status
+  &--open {
+    color: color.adjust($color-status-open, $lightness: -10%);
+    background: $color-status-open-bg;
+    border: 1px solid $color-status-open-border;
+  }
+
+  // In Progress status
+  &--in-progress {
+    color: color.adjust($color-status-in-progress, $lightness: -10%);
+    background: $color-status-in-progress-bg;
+    border: 1px solid $color-status-in-progress-border;
+  }
+
+  // Complete status
+  &--complete {
+    color: color.adjust($color-status-complete, $lightness: -10%);
+    background: $color-status-complete-bg;
+    border: 1px solid $color-status-complete-border;
+  }
+
+  // Blocked status
+  &--blocked {
+    color: color.adjust($color-status-blocked, $lightness: -15%);
+    background: $color-status-blocked-bg;
+    border: 1px solid $color-status-blocked-border;
+  }
 }

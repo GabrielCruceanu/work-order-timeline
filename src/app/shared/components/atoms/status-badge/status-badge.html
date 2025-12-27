@@ -1,7 +1,9 @@
 <span
   class="status-badge"
-  [style.background]="currentConfig().background"
-  [style.color]="currentConfig().color"
+  [class.status-badge--open]="status() === 'open'"
+  [class.status-badge--in-progress]="status() === 'in-progress'"
+  [class.status-badge--complete]="status() === 'complete'"
+  [class.status-badge--blocked]="status() === 'blocked'"
 >
   {{ currentConfig().label }}
 </span>

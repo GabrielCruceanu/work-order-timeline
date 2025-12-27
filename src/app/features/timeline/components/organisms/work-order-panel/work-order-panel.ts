@@ -10,16 +10,26 @@ import {
   inject,
 } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { NgbDatepickerModule, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
-import { NgSelectModule } from '@ng-select/ng-select';
+import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { WorkOrderDocument, WorkOrderStatus } from '@/app/core/models/work-order.model';
 import { WorkCenterDocument } from '@/app/core/models/work-center.model';
+import { DatePickerComponent } from '@/app/shared/components/molecules/date-picker/date-picker';
+import { DropdownComponent } from '@/app/shared/components/molecules/dropdown/dropdown';
+import { InputComponent } from '@/app/shared/components/atoms/input/input';
+import { ButtonComponent } from '@/app/shared/components/atoms/button/button';
 
 @Component({
   selector: 'app-work-order-panel',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, ReactiveFormsModule, NgbDatepickerModule, NgSelectModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    DatePickerComponent,
+    DropdownComponent,
+    InputComponent,
+    ButtonComponent,
+  ],
   templateUrl: './work-order-panel.html',
   styleUrls: ['./work-order-panel.scss'],
 })
@@ -60,6 +70,37 @@ export class WorkOrderPanelComponent {
 
   // Computed title
   panelTitle = computed(() => (this.mode() === 'create' ? 'Create Work Order' : 'Edit Work Order'));
+
+  // Helper methods for status chip colors
+  getStatusBgColor(status: WorkOrderStatus): string {
+    const colors: Record<WorkOrderStatus, string> = {
+      open: 'rgba(0, 188, 212, 0.1)',
+      'in-progress': 'rgba(99, 102, 241, 0.1)',
+      complete: 'rgba(16, 185, 129, 0.1)',
+      blocked: 'rgba(245, 158, 11, 0.1)',
+    };
+    return colors[status] || colors.open;
+  }
+
+  getStatusTextColor(status: WorkOrderStatus): string {
+    const colors: Record<WorkOrderStatus, string> = {
+      open: '#00bcd4',
+      'in-progress': '#6366f1',
+      complete: '#10b981',
+      blocked: '#f59e0b',
+    };
+    return colors[status] || colors.open;
+  }
+
+  getStatusBorderColor(status: WorkOrderStatus): string {
+    const colors: Record<WorkOrderStatus, string> = {
+      open: 'rgba(0, 188, 212, 0.2)',
+      'in-progress': 'rgba(99, 102, 241, 0.2)',
+      complete: 'rgba(16, 185, 129, 0.2)',
+      blocked: 'rgba(245, 158, 11, 0.2)',
+    };
+    return colors[status] || colors.open;
+  }
 
   constructor() {
     // Effect to populate form when panel opens
@@ -204,6 +245,34 @@ export class WorkOrderPanelComponent {
     }, 300);
   }
 
+  /**
+   * Check if a work order date range overlaps with existing orders on the same work center
+   *
+   * Overlap detection algorithm:
+   * Two date ranges overlap if: start1 < end2 && start2 < end1
+   *
+   * Visual representation:
+   *   Range 1: [----]
+   *   Range 2:      [----]  (no overlap - start2 >= end1)
+   *
+   *   Range 1: [----]
+   *   Range 2:   [----]    (overlap - start2 < end1 && start1 < end2)
+   *
+   *   Range 1: [----]
+   *   Range 2: [--]        (overlap - contained within)
+   *
+   * The algorithm:
+   * 1. Filter existing orders to same work center
+   * 2. Exclude the current work order being edited (if in edit mode)
+   * 3. Check each order's date range against the new range
+   * 4. Return the first overlapping order found, or null if no overlap
+   *
+   * @param workCenterId - Work center to check for overlaps
+   * @param startDate - Start date of the new/edited work order
+   * @param endDate - End date of the new/edited work order
+   * @param excludeWorkOrderId - Optional ID to exclude from check (for edit mode)
+   * @returns The overlapping WorkOrderDocument if found, null otherwise
+   */
   private checkOverlap(
     workCenterId: string,
     startDate: Date,
@@ -213,24 +282,28 @@ export class WorkOrderPanelComponent {
     const existingOrders = this.existingWorkOrders();
 
     // Filter orders for same work center
+    // In edit mode, exclude the current work order from overlap check
+    // (a work order can overlap with itself, which is allowed)
     const ordersInSameCenter = existingOrders.filter(
       order =>
         order.data.workCenterId === workCenterId &&
         (!excludeWorkOrderId || order.docId !== excludeWorkOrderId)
     );
 
-    // Check for overlaps
+    // Check for overlaps using the standard interval overlap formula
+    // Two intervals [a1, a2] and [b1, b2] overlap if: a1 < b2 && b1 < a2
     for (const order of ordersInSameCenter) {
       const orderStart = new Date(order.data.startDate);
       const orderEnd = new Date(order.data.endDate);
 
       // Check if date ranges overlap: start1 < end2 && start2 < end1
+      // This handles all overlap cases: partial overlap, complete containment, exact boundaries
       if (startDate < orderEnd && endDate > orderStart) {
-        return order; // Overlap found
+        return order; // Overlap found - return the conflicting order
       }
     }
 
-    return null; // No overlap
+    return null; // No overlap found
   }
 
   onClose() {
