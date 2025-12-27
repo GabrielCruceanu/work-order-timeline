@@ -1,0 +1,11 @@
+<div class="timeline-header">
+  <div class="timeline-header__container">
+    <div class="timeline-header__title">
+      <h1>Work Orders</h1>
+    </div>
+    <div class="timeline-header__controls">
+      <label>Timescale</label>
+      <ng-select [items]="zoomLevels()" (change)="timescaleChanged.emit($event.value)" />
+    </div>
+  </div>
+</div>

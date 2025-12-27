@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ZoomLevel } from '../../../shared/constants/app.constants';
+import { ZOOM_LEVEL_BUFFERS, ZoomLevel } from '../../../shared/constants/app.constants';
 
 /**
  * Service for timeline-specific business logic
@@ -26,5 +26,16 @@ export class TimelineService {
       default:
         return baseWidth;
     }
+  }
+
+  /**
+   * Get the date range for a given zoom level
+   */
+  getDateRange(zoomLevel: ZoomLevel): { start: Date, end: Date } {
+    const buffer = ZOOM_LEVEL_BUFFERS[zoomLevel];
+    const today = new Date();
+    const start = new Date(today.getTime() - buffer);
+    const end = new Date(today.getTime() + buffer);
+    return { start, end };
   }
 }
