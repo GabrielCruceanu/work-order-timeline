@@ -128,6 +128,32 @@ type WorkOrderStatus = 'open' | 'in-progress' | 'complete' | 'blocked';
 - Ensure smooth horizontal scrolling
 - Left panel must stay fixed while timeline scrolls
 
+**Work Order Bar Positioning Algorithm**:
+
+- **Day view**: Each column = 1 day (120px), position = daysFromStart \* columnWidth
+- **Week view**: Each column = 1 week (180px), position = (daysFromStart / 7) \* columnWidth
+- **Month view**: Each column = 1 month (180px), position = monthsFromStart \* columnWidth
+- Uses `differenceInDays()` and `differenceInMonths()` utility functions
+- Minimum width: 80px (enforced to ensure text readability)
+- Padding: 4px from left edge, 8px total (4px each side) subtracted from width
+
+### Status Color System
+
+**Work Order Bar Colors** (by status):
+
+- **Open**: Background #5659ff, Border #4c51bf
+- **In Progress**: Background #6f42c1, Border #5a34a1
+- **Complete**: Background #28a745, Border #218838
+- **Blocked**: Background #ffc107, Border #e0a800
+- Text on all bars: #ffffff
+
+**Status Badge Colors** (by status):
+
+- **Open**: Background #e7f5ff, Text #1971c2
+- **In Progress**: Background #f3e5f5, Text #7b1fa2
+- **Complete**: Background #d4edda, Text #155724
+- **Blocked**: Background #fff3cd, Text #856404
+
 ### Date Range Calculation
 
 - **Day view**: Show 14 days (today ± 7 days)
@@ -250,8 +276,14 @@ trackColumn(column: DateColumn): string {
 ### WorkOrderBar
 
 - Displays work order name and status badge
-- Shows three-dot actions menu
+- Shows three-dot actions menu (appears on hover)
 - Handles click events for edit/delete
+- Computed signals for positioning and styling
+- Status-based color coding (4 types: open, in-progress, complete, blocked)
+- Minimum width enforcement (80px)
+- Text truncation with ellipsis for long names
+- Z-index elevation on hover (z-index: 10)
+- Click outside handler for menu closure
 
 ### WorkOrderPanel
 

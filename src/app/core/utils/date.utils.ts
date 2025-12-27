@@ -122,6 +122,31 @@ export function differenceInDays(dateLeft: Date, dateRight: Date): number {
 }
 
 /**
+ * Calculate the difference in months between two dates
+ * Returns fractional months (e.g., 1.5 for 1 month and 15 days)
+ * Returns positive value if dateLeft is after dateRight, negative if before
+ */
+export function differenceInMonths(dateLeft: Date, dateRight: Date): number {
+  const yearsDiff = dateLeft.getFullYear() - dateRight.getFullYear();
+  const monthsDiff = dateLeft.getMonth() - dateRight.getMonth();
+  const daysDiff = dateLeft.getDate() - dateRight.getDate();
+
+  let totalMonths = yearsDiff * 12 + monthsDiff;
+
+  // Add fractional month based on days (only for positive differences to match prompt)
+  if (daysDiff > 0) {
+    const daysInMonth = new Date(dateLeft.getFullYear(), dateLeft.getMonth() + 1, 0).getDate();
+    totalMonths += daysDiff / daysInMonth;
+  } else if (daysDiff < 0) {
+    // For negative differences, subtract fractional month based on source month
+    const daysInMonth = new Date(dateRight.getFullYear(), dateRight.getMonth() + 1, 0).getDate();
+    totalMonths += daysDiff / daysInMonth;
+  }
+
+  return totalMonths;
+}
+
+/**
  * Format date according to format string
  * Supports: 'MM/DD', 'MMM DD', 'MMMM YYYY', 'ddd MM/DD', 'Week W (MMM DD - MMM DD)'
  */

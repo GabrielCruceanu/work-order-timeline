@@ -72,6 +72,17 @@
     }
   }
 
+  &__bars-container {
+    position: relative;
+    height: 100%;
+    pointer-events: none; // Allow click-through to timeline
+
+    // Re-enable pointer events on bars
+    app-work-order-bar {
+      pointer-events: auto;
+    }
+  }
+
   &__today-indicator {
     position: absolute;
     top: 0;

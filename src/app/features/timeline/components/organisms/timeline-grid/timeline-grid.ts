@@ -25,11 +25,12 @@ import {
   getWeekNumber,
   differenceInDays,
 } from '@/app/core/utils/date.utils';
+import { WorkOrderBarComponent } from '@/app/features/timeline/components/molecules/work-order-bar/work-order-bar';
 
 @Component({
   selector: 'app-timeline-grid',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, WorkOrderBarComponent],
   templateUrl: './timeline-grid.html',
   styleUrls: ['./timeline-grid.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -69,6 +70,40 @@ export class TimelineGridComponent {
     }
 
     return this.calculateTodayPosition(today, range.start, zoomLevel);
+  });
+
+  // Computed signal for bars grouped by work center
+  workOrdersByCenter = computed(() => {
+    const orders = this.workOrders();
+    const centers = this.workCenters();
+
+    // Group orders by work center
+    const grouped = new Map<string, WorkOrderDocument[]>();
+
+    centers.forEach(center => {
+      grouped.set(center.docId, []);
+    });
+
+    orders.forEach(order => {
+      const centerId = order.data.workCenterId;
+      const list = grouped.get(centerId);
+      if (list) {
+        list.push(order);
+      }
+    });
+
+    return grouped;
+  });
+
+  // Computed signal for column width based on zoom level
+  columnWidth = computed(() => {
+    const zoom = this.zoomLevel();
+    const columnWidths: Record<ZoomLevel, number> = {
+      day: 120,
+      week: 180,
+      month: 180,
+    };
+    return columnWidths[zoom];
   });
 
   // ViewChild references for scroll synchronization
@@ -211,6 +246,26 @@ export class TimelineGridComponent {
     }
 
     return columns;
+  }
+
+  // Method to get orders for specific work center
+  getOrdersForCenter(centerId: string): WorkOrderDocument[] {
+    return this.workOrdersByCenter().get(centerId) || [];
+  }
+
+  // Handle bar events
+  onWorkOrderEdit(workOrder: WorkOrderDocument) {
+    // TODO: Open edit panel (Phase 5)
+    console.log('Edit work order:', workOrder);
+  }
+
+  onWorkOrderDelete(workOrder: WorkOrderDocument) {
+    // TODO: Implement delete (Phase 6)
+    console.log('Delete work order:', workOrder);
+  }
+
+  onWorkOrderClick(workOrder: WorkOrderDocument) {
+    this.workOrderSelected.emit(workOrder);
   }
 
   /**

@@ -23,7 +23,20 @@
       <!-- Timeline grid rows -->
       @for (workCenter of workCenters(); track workCenter.docId) {
         <div class="timeline-grid__timeline-row">
-          <!-- Work order bars will be added in Phase 4 -->
+          <!-- Work order bars for this row -->
+          <div class="timeline-grid__bars-container">
+            @for (order of getOrdersForCenter(workCenter.docId); track order.docId) {
+              <app-work-order-bar
+                [workOrder]="order"
+                [columnWidth]="columnWidth()"
+                [zoomLevel]="zoomLevel()"
+                [dateRangeStart]="dateRange().start"
+                (editClicked)="onWorkOrderEdit($event)"
+                (deleteClicked)="onWorkOrderDelete($event)"
+                (barClicked)="onWorkOrderClick($event)"
+              />
+            }
+          </div>
         </div>
       }
     </div>
