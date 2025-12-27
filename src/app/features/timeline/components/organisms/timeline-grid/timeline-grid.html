@@ -1,0 +1,31 @@
+<div class="timeline-grid">
+  <div #leftPanel class="timeline-grid__left-panel" (scroll)="onLeftPanelScroll($event)">
+    @for (workCenter of workCenters(); track workCenter.docId) {
+      <div class="timeline-grid__work-center-row">
+        <span class="timeline-grid__work-center-name">{{ workCenter.data.name }}</span>
+      </div>
+    }
+  </div>
+  <div class="timeline-grid__right-panel">
+    <div class="timeline-grid__header">
+      @for (column of gridColumns(); track column.date.getTime()) {
+        <div class="timeline-grid__column" [style.width.px]="column.width">
+          {{ column.label }}
+        </div>
+      }
+    </div>
+    <div #rightContent class="timeline-grid__content" (scroll)="onRightPanelScroll($event)">
+      @if (todayPosition() !== null) {
+        <div class="timeline-grid__today-indicator" [style.left.px]="todayPosition()!">
+          <span class="timeline-grid__today-label">Today</span>
+        </div>
+      }
+      <!-- Timeline grid rows -->
+      @for (workCenter of workCenters(); track workCenter.docId) {
+        <div class="timeline-grid__timeline-row">
+          <!-- Work order bars will be added in Phase 4 -->
+        </div>
+      }
+    </div>
+  </div>
+</div>

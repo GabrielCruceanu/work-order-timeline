@@ -104,12 +104,56 @@ type WorkOrderStatus = 'open' | 'in-progress' | 'complete' | 'blocked';
 
 ## Key Design Patterns
 
+### Scroll Synchronization Pattern
+
+- Use `viewChild()` to get references to scrollable containers
+- Bind scroll events on both panels
+- Sync scroll positions: `leftPanel.scrollTop = rightContent.scrollTop` (and vice versa)
+- Only right panel scrolls horizontally
+- Both panels scroll together vertically
+- Prevents infinite scroll loops by checking if positions differ before syncing
+
+### CSS Grid Split-Panel Pattern
+
+- Use CSS Grid with `grid-template-columns: 200px 1fr` for fixed/flexible split
+- Left panel: `overflow-y: auto`, `overflow-x: hidden`
+- Right panel: `overflow: auto` (both directions)
+- Header section: `overflow-x: auto` for horizontal scroll of date columns
+- Content section: `overflow: auto` for both directions with scroll sync
+
 ### Timeline Positioning
 
 - Calculate bar positions based on dates relative to visible timeline range
 - Handle zoom level changes (recalculate column widths)
 - Ensure smooth horizontal scrolling
 - Left panel must stay fixed while timeline scrolls
+
+### Date Range Calculation
+
+- **Day view**: Show 14 days (today ± 7 days)
+- **Week view**: Show 8 weeks (current week ± 4 weeks, adjusted to include full weeks)
+- **Month view**: Show 6 months (current month ± 3 months, adjusted to include full months)
+- Use `startOfWeek()`, `endOfWeek()`, `startOfMonth()`, `endOfMonth()` utilities for precise boundaries
+- Date ranges are computed signals that react to zoom level changes
+
+### Date Column Generation
+
+- Generate columns based on zoom level and date range
+- **Day columns**: 120px width, format "Mon 12/25"
+- **Week columns**: 140px width, format "Week 52 (Dec 25 - Dec 31)"
+- **Month columns**: 180px width, format "December 2025"
+- Use `formatDate()` utility with format strings for consistent labeling
+- Columns are generated as computed signals for reactive updates
+
+### Today Indicator Positioning
+
+- Calculate pixel offset from left edge of timeline based on:
+  - Current date position within visible date range
+  - Zoom level column width
+  - Day position within week (for week view)
+  - Day position within month (for month view)
+- Hide indicator if current date is outside visible range
+- Position calculated as computed signal for reactive updates
 
 ### Form State Management
 
@@ -126,11 +170,13 @@ type WorkOrderStatus = 'open' | 'in-progress' | 'complete' | 'blocked';
 
 ### Zoom Level Handling
 
-- Day view: Shows individual days in header
-- Week view: Shows weeks in header
-- Month view: Shows months in header
+- Day view: Shows individual days in header (120px per column)
+- Week view: Shows weeks in header (140px per column)
+- Month view: Shows months in header (180px per column)
 - All zoom levels show same data, just different scales
-- Recalculate column widths on zoom change
+- Recalculate column widths on zoom change via computed signals
+- Date range automatically adjusts based on zoom level
+- Column labels format differently per zoom level using `formatDate()` utility
 
 ## Component Responsibilities
 
@@ -147,6 +193,10 @@ type WorkOrderStatus = 'open' | 'in-progress' | 'complete' | 'blocked';
 - Calculates date column positions
 - Handles horizontal scrolling
 - Renders work order bars at correct positions
+- **Split-panel layout**: CSS Grid with fixed left panel (200px) and flexible right panel
+- **Scroll synchronization**: ViewChild references to sync vertical scroll between panels
+- **Date column rendering**: Computed signals for date range and columns based on zoom level
+- **Today indicator**: Absolute positioned vertical line with computed pixel offset
 
 ### WorkOrderBar
 
@@ -237,3 +287,32 @@ src/app/
     └── utilities/
         └── _helpers.scss          # Utility classes
 ```
+
+## Design Specifications
+
+**CRITICAL**: All implementations must be pixel-perfect matches to the provided design images.
+
+### Design Reference
+
+- **Design Images**: Located in `brief/design/` (8 states documented)
+- **Sketch File**: https://www.sketch.com/s/d56a77de-9753-45a8-af7a-d93a42276667
+- **Complete Specs**: See `memory-bank/designSpecs.md`
+
+### Key Design Requirements
+
+- Colors must match design images exactly
+- Spacing must match design images exactly (pixel values)
+- Typography: Circular Std font family
+- All interactive states must match design
+- Component dimensions must match design
+
+### Design States to Implement
+
+1. Default timeline view
+2. Zoom level selection
+3. Work order bar hover (three-dot menu)
+4. Edit/Delete dropdown expanded
+5. Create panel with date selection
+6. Create panel initial state
+7. Create panel active text field
+8. Create panel status dropdown
