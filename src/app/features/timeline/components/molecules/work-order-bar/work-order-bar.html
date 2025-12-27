@@ -1,47 +1,49 @@
 <div
   class="work-order-bar"
-  [class.work-order-bar--hovered]="isHovered()"
+  [class.work-order-bar--open]="workOrder().data.status === 'open'"
+  [class.work-order-bar--in-progress]="workOrder().data.status === 'in-progress'"
+  [class.work-order-bar--complete]="workOrder().data.status === 'complete'"
+  [class.work-order-bar--blocked]="workOrder().data.status === 'blocked'"
   [style.left.px]="barPosition().left"
   [style.width.px]="barPosition().width"
-  [style.background]="barStyles().background"
-  [style.border]="barStyles().border"
   (mouseenter)="isHovered.set(true)"
   (mouseleave)="isHovered.set(false)"
   (click)="onBarClick($event)"
 >
   <span class="work-order-bar__name">{{ workOrder().data.name }}</span>
 
-  <app-status-badge [status]="workOrder().data.status" />
+  <div class="work-order-bar__status">
+    <app-status-badge [status]="workOrder().data.status" />
+  </div>
 
-  @if (isHovered()) {
+  <div class="work-order-bar__actions">
     <button
-      class="work-order-bar__menu-button"
+      #actionsButton
+      class="work-order-bar__actions-button"
+      [class.work-order-bar__actions-button--active]="isMenuOpen()"
       (click)="toggleMenu(); $event.stopPropagation()"
       type="button"
       aria-label="Open menu"
     >
       ⋮
     </button>
-  }
 
-  @if (isMenuOpen()) {
-    <div class="work-order-bar__menu" (click)="$event.stopPropagation()">
-      <button
-        class="work-order-bar__menu-option work-order-bar__menu-option--edit"
-        (click)="onEdit()"
-        type="button"
+    @if (isMenuOpen()) {
+      <div
+        class="work-order-bar__actions-menu"
+        [style.top.px]="menuPosition()?.top"
+        [style.right.px]="menuPosition()?.right"
+        (click)="$event.stopPropagation()"
       >
-        <span class="work-order-bar__menu-icon">✏️</span>
-        <span>Edit</span>
-      </button>
-      <button
-        class="work-order-bar__menu-option work-order-bar__menu-option--delete"
-        (click)="onDelete()"
-        type="button"
-      >
-        <span class="work-order-bar__menu-icon">🗑️</span>
-        <span>Delete</span>
-      </button>
-    </div>
-  }
+        <button class="work-order-bar__actions-item" (click)="onEdit()" type="button">Edit</button>
+        <button
+          class="work-order-bar__actions-item work-order-bar__actions-item--danger"
+          (click)="onDelete()"
+          type="button"
+        >
+          Delete
+        </button>
+      </div>
+    }
+  </div>
 </div>

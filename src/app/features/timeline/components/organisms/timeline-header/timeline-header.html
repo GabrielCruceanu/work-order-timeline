@@ -1,8 +1,14 @@
 <header class="timeline-header">
-  <div class="timeline-header__left">
-    <h1 class="timeline-header__title">Work Order Schedule</h1>
-  </div>
-  <div class="timeline-header__right">
+  <h1 class="timeline-header__title">Work Orders</h1>
+
+  <div class="timeline-header__controls">
+    <app-button
+      variant="secondary"
+      (clicked)="onTodayClick()"
+      [buttonClass]="'timeline-header__today-button'"
+    >
+      Today
+    </app-button>
     <app-zoom-control [currentZoom]="currentZoom()" (zoomChanged)="onZoomChanged($event)" />
   </div>
 </header>

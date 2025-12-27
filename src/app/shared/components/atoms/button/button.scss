@@ -1,0 +1,86 @@
+@use "sass:color";
+@use "../../../../../styles/abstracts/variables" as *;
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: $space-1 $space-2; // 4px 8px
+  border: none;
+  border-radius: $radius-md; // 6px
+  font-family: $font-family-base;
+  font-size: $font-size-sm; // 14px
+  font-weight: $font-weight-medium; // 500
+  line-height: $line-height-normal;
+  cursor: pointer;
+  transition:
+    $transition-colors,
+    box-shadow $transition-base;
+  outline: none;
+  white-space: nowrap;
+  min-width: 0;
+
+  &:focus-visible {
+    outline: 1px solid $color-primary;
+    outline-offset: 1px;
+  }
+
+  // Primary button
+  &--primary {
+    background: $color-primary;
+    color: $color-background;
+
+    &:hover:not(:disabled) {
+      background: $color-primary-dark;
+    }
+
+    &:active:not(:disabled) {
+      background: color.adjust($color-primary, $lightness: -15%);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  // Secondary button
+  &--secondary {
+    background: $color-background;
+    color: $color-text-secondary;
+    border: 1px solid $color-border;
+
+    &:hover:not(:disabled) {
+      background: $color-background-hover;
+      border-color: $color-gray-300;
+    }
+
+    &:active:not(:disabled) {
+      background: $color-gray-100;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  // Danger/Delete button
+  &--danger {
+    background: #ef4444;
+    color: $color-background;
+
+    &:hover:not(:disabled) {
+      background: #dc2626;
+    }
+
+    &:active:not(:disabled) {
+      background: #b91c1c;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+}

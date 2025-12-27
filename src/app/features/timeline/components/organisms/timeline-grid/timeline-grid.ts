@@ -15,9 +15,12 @@ import { WorkOrderDocument } from '@/app/core/models/work-order.model';
 import { ZoomLevel } from '@/app/shared/constants/app.constants';
 import { DateColumn, DateRange } from '@/app/features/timeline/models/timeline.model';
 import {
+  addHours,
   addDays,
   addWeeks,
   addMonths,
+  startOfHour,
+  endOfHour,
   startOfWeek,
   endOfWeek,
   startOfMonth,
@@ -101,6 +104,7 @@ export class TimelineGridComponent {
   columnWidth = computed(() => {
     const zoom = this.zoomLevel();
     const columnWidths: Record<ZoomLevel, number> = {
+      hour: 60,
       day: 120,
       week: 180,
       month: 180,
@@ -112,6 +116,27 @@ export class TimelineGridComponent {
   leftPanelRef = viewChild<ElementRef<HTMLDivElement>>('leftPanel');
   rightContentRef = viewChild<ElementRef<HTMLDivElement>>('rightContent');
 
+  /**
+   * Scroll to today's position in the timeline
+   * Centers today's date in the visible viewport
+   */
+  scrollToToday(): void {
+    const todayPos = this.todayPosition();
+    const rightContent = this.rightContentRef()?.nativeElement;
+
+    if (todayPos !== null && rightContent) {
+      // Calculate scroll position to center today in the viewport
+      const containerWidth = rightContent.clientWidth;
+      const scrollPosition = todayPos - containerWidth / 2;
+
+      // Scroll smoothly to today's position
+      rightContent.scrollTo({
+        left: Math.max(0, scrollPosition),
+        behavior: 'smooth',
+      });
+    }
+  }
+
   // Track function for @for loop to ensure proper updates when zoom changes
   trackColumn(column: DateColumn): string {
     return `${this.zoomLevel()}-${column.date.getTime()}-${column.width}`;
@@ -122,6 +147,7 @@ export class TimelineGridComponent {
 
   /**
    * Sync vertical scroll between left and right panels
+   * Also handles infinite scroll detection
    */
   onRightPanelScroll(event: Event): void {
     const leftPanel = this.leftPanelRef()?.nativeElement;
@@ -158,6 +184,12 @@ export class TimelineGridComponent {
     let end: Date;
 
     switch (zoomLevel) {
+      case 'hour': {
+        // Show ±12 hours (24 hours total)
+        start = addHours(today, -12);
+        end = addHours(today, 12);
+        break;
+      }
       case 'day':
         start = addDays(today, -7);
         end = addDays(today, 7);
@@ -194,6 +226,7 @@ export class TimelineGridComponent {
 
     // Column widths based on zoom level
     const columnWidths: Record<ZoomLevel, number> = {
+      hour: 60,
       day: 120,
       week: 180, // Increased from 140 to accommodate full week labels
       month: 180,
@@ -202,6 +235,21 @@ export class TimelineGridComponent {
     const width = columnWidths[zoomLevel];
 
     switch (zoomLevel) {
+      case 'hour': {
+        // Generate one column per hour
+        currentDate = startOfHour(dateRange.start);
+        while (currentDate <= dateRange.end) {
+          const hour = currentDate.getHours();
+          const label = `${String(hour).padStart(2, '0')}:00`;
+          columns.push({
+            date: new Date(currentDate),
+            label,
+            width,
+          });
+          currentDate = addHours(currentDate, 1);
+        }
+        break;
+      }
       case 'day': {
         // Generate one column per day
         while (currentDate <= dateRange.end) {
@@ -316,7 +364,20 @@ export class TimelineGridComponent {
 
   /**
    * Convert pixel position to date based on zoom level
-   * Handles edge cases: boundaries, week/month snapping
+   *
+   * Algorithm:
+   * 1. Calculate how many columns (hours/days/weeks/months) from the start date
+   * 2. Add that offset to the start date
+   * 3. Snap to appropriate boundary (hour start, week start, month start)
+   * 4. Clamp to visible date range to prevent out-of-bounds dates
+   *
+   * Edge cases handled:
+   * - Clicking before start date: returns start date
+   * - Clicking after end date: returns end date
+   * - Week/Month views: snaps to start of period for consistency
+   *
+   * @param pixelX - Horizontal pixel position relative to timeline row
+   * @returns Date corresponding to the clicked position
    */
   private pixelToDate(pixelX: number): Date {
     const columnWidth = this.columnWidth();
@@ -327,27 +388,42 @@ export class TimelineGridComponent {
     let date: Date;
 
     switch (zoomLevel) {
+      case 'hour': {
+        // Each column = 1 hour = 60px
+        // Calculate which hour was clicked by dividing pixel position by column width
+        const hoursFromStart = Math.floor(pixelX / columnWidth);
+        date = addHours(startDate, hoursFromStart);
+        // Snap to start of hour (00:00) for consistency
+        date = startOfHour(date);
+        break;
+      }
       case 'day': {
         // Each column = 1 day = 120px
+        // Calculate which day was clicked
         const daysFromStart = Math.floor(pixelX / columnWidth);
         date = addDays(startDate, daysFromStart);
+        // No snapping needed - day view already represents full days
         break;
       }
 
       case 'week': {
         // Each column = 1 week = 180px
+        // Calculate which week was clicked
         const weeksFromStart = Math.floor(pixelX / columnWidth);
         date = addWeeks(startDate, weeksFromStart);
-        // Snap to start of week
+        // Snap to start of week (Monday) for consistency
+        // This ensures clicking anywhere in a week column selects the week start
         date = startOfWeek(date);
         break;
       }
 
       case 'month': {
         // Each column = 1 month = 180px
+        // Calculate which month was clicked
         const monthsFromStart = Math.floor(pixelX / columnWidth);
         date = addMonths(startDate, monthsFromStart);
-        // Snap to start of month
+        // Snap to start of month (1st day) for consistency
+        // This ensures clicking anywhere in a month column selects the 1st
         date = startOfMonth(date);
         break;
       }
@@ -356,7 +432,8 @@ export class TimelineGridComponent {
         date = new Date();
     }
 
-    // Clamp to visible range
+    // Clamp to visible range to prevent dates outside the timeline
+    // This handles edge cases where calculations might go slightly out of bounds
     if (date < startDate) date = new Date(startDate);
     if (date > endDate) date = new Date(endDate);
 
@@ -364,10 +441,28 @@ export class TimelineGridComponent {
   }
 
   /**
-   * Calculate pixel position of today indicator
+   * Calculate pixel position of today indicator line
+   *
+   * This method calculates where to draw the vertical "today" line on the timeline.
+   * The calculation varies by zoom level:
+   *
+   * - Hour view: Calculate hours difference, multiply by hour column width
+   * - Day view: Calculate days difference, multiply by day column width
+   * - Week view: Calculate weeks difference + position within week (0-1), multiply by week column width
+   * - Month view: Calculate months difference + position within month (0-1), multiply by month column width
+   *
+   * For week and month views, we need to account for the position WITHIN the period:
+   * - Week: Which day of the week (Monday = 0, Sunday = 6/7)
+   * - Month: Which day of the month (1st = 0, last day = ~1)
+   *
+   * @param today - Today's date
+   * @param startDate - Start date of the visible timeline range
+   * @param zoomLevel - Current zoom level
+   * @returns Pixel position from the left edge of the timeline, or null if today is outside visible range
    */
   private calculateTodayPosition(today: Date, startDate: Date, zoomLevel: ZoomLevel): number {
     const columnWidths: Record<ZoomLevel, number> = {
+      hour: 60,
       day: 120,
       week: 180, // Increased from 140 to match column width
       month: 180,
@@ -376,33 +471,50 @@ export class TimelineGridComponent {
     const width = columnWidths[zoomLevel];
 
     switch (zoomLevel) {
+      case 'hour': {
+        // Calculate exact hours difference (can be fractional)
+        const hoursDiff = (today.getTime() - startDate.getTime()) / (1000 * 60 * 60);
+        return hoursDiff * width;
+      }
       case 'day': {
+        // Calculate whole days difference
         const daysDiff = differenceInDays(today, startDate);
         return daysDiff * width;
       }
       case 'week': {
+        // Calculate which week today falls in
         const startWeek = startOfWeek(startDate);
         const todayWeek = startOfWeek(today);
         const daysDiff = differenceInDays(todayWeek, startWeek);
         const weeksDiff = daysDiff / 7;
-        // Position within the week (0-1)
+
+        // Calculate position within the week (0 = Monday, 1 = Sunday)
+        // Convert Sunday (0) to 7 for calculation, then normalize to 0-1 range
         const dayOfWeek = today.getDay() === 0 ? 7 : today.getDay(); // Monday = 1, Sunday = 7
-        const dayPosition = (dayOfWeek - 1) / 7;
+        const dayPosition = (dayOfWeek - 1) / 7; // Normalize to 0-1 (Monday = 0, Sunday = ~0.857)
+
+        // Total position = weeks offset + fractional position within week
         return (weeksDiff + dayPosition) * width;
       }
       case 'month': {
+        // Calculate which month today falls in
         const startMonth = startOfMonth(startDate);
         const todayMonth = startOfMonth(today);
         let monthsDiff = 0;
         let tempDate = new Date(startMonth);
+
+        // Count months by iterating (handles variable month lengths correctly)
         while (tempDate < todayMonth) {
           tempDate = addMonths(tempDate, 1);
           monthsDiff++;
         }
-        // Position within the month (0-1)
+
+        // Calculate position within the month (0 = 1st, 1 = last day)
         const dayOfMonth = today.getDate();
         const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
-        const dayPosition = (dayOfMonth - 1) / daysInMonth;
+        const dayPosition = (dayOfMonth - 1) / daysInMonth; // Normalize to 0-1 range
+
+        // Total position = months offset + fractional position within month
         return (monthsDiff + dayPosition) * width;
       }
     }

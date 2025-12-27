@@ -1,4 +1,4 @@
-import { Component, HostListener, inject, signal } from '@angular/core';
+import { Component, HostListener, inject, signal, viewChild } from '@angular/core';
 import { TimelineHeaderComponent } from './components/organisms/timeline-header/timeline-header';
 import { TimelineGridComponent } from './components/organisms/timeline-grid/timeline-grid';
 import { WorkOrderPanelComponent } from './components/organisms/work-order-panel/work-order-panel';
@@ -15,8 +15,13 @@ import { WorkOrderDocument } from '@/app/core/models/work-order.model';
   imports: [TimelineHeaderComponent, TimelineGridComponent, WorkOrderPanelComponent],
   template: `
     <div class="timeline">
-      <app-timeline-header [currentZoom]="zoomLevel()" (zoomChanged)="onZoomChanged($event)" />
+      <app-timeline-header
+        [currentZoom]="zoomLevel()"
+        (zoomChanged)="onZoomChanged($event)"
+        (todayClicked)="onTodayClick()"
+      />
       <app-timeline-grid
+        #timelineGrid
         [workCenters]="workCenterService.workCenters()"
         [workOrders]="workOrderService.workOrders()"
         [zoomLevel]="zoomLevel()"
@@ -43,6 +48,7 @@ import { WorkOrderDocument } from '@/app/core/models/work-order.model';
         flex-direction: column;
         height: 100vh;
         overflow: hidden;
+        min-height: 100%;
       }
     `,
   ],
@@ -53,6 +59,9 @@ export class TimelineComponent {
 
   zoomLevel = signal<ZoomLevel>('day');
 
+  // ViewChild reference to timeline grid
+  timelineGridRef = viewChild<TimelineGridComponent>('timelineGrid');
+
   // Panel state signals
   isPanelOpen = signal(false);
   panelMode = signal<'create' | 'edit'>('create');
@@ -60,13 +69,21 @@ export class TimelineComponent {
   prefilledPanelData = signal<{ workCenterId?: string; date?: Date } | null>(null);
 
   constructor() {
-    // Initialize sample data
-    this.workCenterService.initializeSampleData();
-    this.workOrderService.initializeSampleData();
+    // Services automatically load from localStorage on initialization
+    // If localStorage is empty, they will initialize with sample data
+    // No explicit initialization needed here
   }
 
   protected onZoomChanged(zoom: ZoomLevel) {
     this.zoomLevel.set(zoom);
+  }
+
+  // Handle "Today" button click
+  onTodayClick() {
+    const grid = this.timelineGridRef();
+    if (grid) {
+      grid.scrollToToday();
+    }
   }
 
   // Handle edit from work order bar

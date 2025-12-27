@@ -4,7 +4,9 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./out-tsc/app",
-    "types": [],
+    "types": [
+      "@angular/localize"
+    ],
     "moduleResolution": "bundler"
   },
   "include": ["src/**/*.ts"],

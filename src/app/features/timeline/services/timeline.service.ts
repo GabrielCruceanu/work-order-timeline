@@ -17,6 +17,8 @@ export class TimelineService {
     const baseWidth = containerWidth / dateRange;
 
     switch (zoomLevel) {
+      case 'hour':
+        return baseWidth / 24; // 1 hour = 1/24 of a day
       case 'day':
         return baseWidth;
       case 'week':
@@ -31,7 +33,7 @@ export class TimelineService {
   /**
    * Get the date range for a given zoom level
    */
-  getDateRange(zoomLevel: ZoomLevel): { start: Date, end: Date } {
+  getDateRange(zoomLevel: ZoomLevel): { start: Date; end: Date } {
     const buffer = ZOOM_LEVEL_BUFFERS[zoomLevel];
     const today = new Date();
     const start = new Date(today.getTime() - buffer);

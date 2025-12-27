@@ -1,76 +1,193 @@
+@use "../../../../../../styles/abstracts/variables" as *;
+
 .timeline-grid {
-  display: grid;
-  grid-template-columns: 200px 1fr;
+  display: flex;
+  background: $color-background;
   height: 100%;
-  overflow: hidden;
+
+  // Header
+  &__header {
+    display: flex;
+    height: 48px;
+    border-bottom: 1px solid $color-border;
+    background: $color-background;
+  }
+
+  &__work-center-header--work-center {
+    border-bottom: 1px solid $color-border;
+  }
+
+  &__work-center-header-text--work-center {
+    font-weight: $font-weight-medium;
+    color: $color-text-secondary;
+    padding-bottom: 2px;
+  }
+  &__work-center-header {
+    width: 150px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    padding: $space-2 $space-3;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-medium;
+    color: $color-text-secondary;
+    border-right: 1px solid $color-border;
+
+    @media (min-width: $breakpoint-md) {
+      width: 200px;
+      padding: $space-3 $space-4;
+      font-size: $font-size-sm;
+    }
+  }
+
+  &__timeline-header {
+    flex: 1;
+    display: flex;
+    overflow-x: auto;
+    scrollbar-width: none; // Firefox
+
+    &::-webkit-scrollbar {
+      display: none; // Chrome, Safari
+    }
+  }
+
+  &__column-header {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: $space-2 $space-1;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-normal;
+    color: $color-text-secondary;
+    border-right: 1px solid $color-border;
+    white-space: nowrap;
+    text-align: center;
+
+    @media (min-width: $breakpoint-md) {
+      padding: $space-3 $space-2;
+      font-size: $font-size-sm;
+    }
+
+    &--current {
+      background: $color-primary-light;
+      color: $color-primary;
+      font-weight: $font-weight-medium;
+    }
+  }
+
+  // Body
+  &__body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
 
   &__left-panel {
-    width: 200px;
-    background-color: #f8f9fa;
+    width: 150px;
+    flex-shrink: 0;
+    background-color: $color-background;
     overflow-y: auto;
     overflow-x: hidden;
+
+    @media (min-width: $breakpoint-md) {
+      width: 200px;
+    }
+
+    @media (min-width: $breakpoint-xl) {
+      width: 380px;
+      min-width: 380px;
+    }
   }
 
   &__work-center-row {
     height: 60px;
-    padding: 0 16px;
+    padding: 0 $space-4;
     display: flex;
     align-items: center;
-    border-bottom: 1px solid #e9ecef;
-    transition: background-color 0.15s ease;
+    border-bottom: 1px solid $color-border;
+    transition: background-color $transition-base;
     cursor: default;
 
     &:hover {
-      background-color: #f1f3f5;
+      background-color: $color-background-hover;
     }
   }
 
   &__work-center-name {
-    font-size: 0.9375rem; // 15px
-    font-weight: 500;
-    color: #212529;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-normal;
+    color: $color-text-primary;
+  }
+
+  &__work-center {
+    width: 150px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    padding: $space-3;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-normal;
+    color: $color-text-primary;
+    border-right: 1px solid $color-border;
+    background: $color-background;
+
+    @media (min-width: $breakpoint-md) {
+      width: 200px;
+      padding: $space-4;
+      font-size: $font-size-sm;
+    }
   }
 
   &__right-panel {
+    flex: 1;
+    min-width: 0;
     display: flex;
     flex-direction: column;
-    background-color: #ffffff;
+    background-color: $color-background;
     overflow: hidden;
   }
 
   &__header {
     display: flex;
-    background-color: #f8f9fa;
-    border-bottom: 1px solid #e9ecef;
+    background-color: $color-background;
+    border-bottom: 1px solid $color-border;
     overflow-x: auto;
     overflow-y: hidden;
   }
 
   &__column {
     flex-shrink: 0;
-    padding: 12px 8px;
-    font-size: 0.875rem; // 14px
-    color: #495057;
-    border-right: 1px solid #e9ecef;
+    padding: $space-3 $space-2;
+    font-size: $font-size-sm;
+    color: $color-text-secondary;
+    border-right: 1px solid $color-border;
     white-space: nowrap;
   }
 
   &__content {
     flex: 1;
-    overflow: auto;
+    overflow-x: auto;
+    overflow-y: auto;
     position: relative;
   }
 
   &__row {
-    height: 60px;
-    border-bottom: 1px solid #e9ecef;
+    display: flex;
+    border-bottom: 1px solid $color-border;
+
+    &:last-child {
+      border-bottom: none;
+    }
   }
 
   &__timeline-row {
+    flex: 1;
     position: relative;
     display: flex;
-    height: 100%;
-    transition: background 0.15s ease;
+    min-width: min-content; // Allow row to extend beyond viewport
+    transition: background $transition-base;
 
     &--hoverable {
       cursor: pointer;
@@ -82,9 +199,9 @@
   }
 
   &__cell {
-    height: 100%;
-    border-right: 1px solid #e9ecef;
+    height: 60px;
     flex-shrink: 0;
+    border-right: 1px solid $color-border;
   }
 
   &__bars-container {
@@ -93,22 +210,35 @@
     left: 0;
     right: 0;
     bottom: 0;
-    pointer-events: none; // Allow click-through to timeline
+    pointer-events: none;
+    padding: $space-2 0;
+    overflow: visible; // Allow dropdown menus to overflow
 
-    // Re-enable pointer events on bars
     app-work-order-bar {
       pointer-events: auto;
     }
   }
 
+  // Current day indicator
   &__today-indicator {
     position: absolute;
     top: 0;
     bottom: 0;
     width: 2px;
-    background-color: #5659ff;
+    background: $color-primary;
     z-index: 10;
     pointer-events: none;
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: -4px;
+      left: -3px;
+      width: 8px;
+      height: 8px;
+      background: $color-primary;
+      border-radius: 50%;
+    }
   }
 
   &__today-label {
@@ -116,12 +246,12 @@
     top: 0;
     left: 50%;
     transform: translateX(-50%);
-    font-size: 0.75rem; // 12px
-    color: #5659ff;
-    background-color: #ffffff;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-weight: 500;
+    font-size: $font-size-xs;
+    color: $color-primary;
+    background-color: $color-background;
+    padding: $space-1 $space-2;
+    border-radius: $radius-sm;
+    font-weight: $font-weight-medium;
     white-space: nowrap;
   }
 }

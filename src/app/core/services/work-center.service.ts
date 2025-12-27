@@ -1,19 +1,68 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, effect, signal } from '@angular/core';
 import { WorkCenterDocument } from '../models/work-center.model';
 
 /**
- * Service for managing work centers
+ * Service for managing work centers with localStorage persistence
  */
 @Injectable({
   providedIn: 'root',
 })
 export class WorkCenterService {
+  // localStorage key for work centers
+  private readonly STORAGE_KEY = 'work-order-timeline:workCenters';
+
   // Signal-based state management
   private _workCenters = signal<WorkCenterDocument[]>([]);
   readonly workCenters = this._workCenters.asReadonly();
 
+  constructor() {
+    // Load from localStorage on initialization
+    this.loadFromStorage();
+
+    // Automatically save to localStorage whenever work centers change
+    effect(() => {
+      const centers = this._workCenters();
+      this.saveToStorage(centers);
+    });
+  }
+
+  /**
+   * Load work centers from localStorage
+   * Falls back to sample data if localStorage is empty or invalid
+   */
+  private loadFromStorage(): void {
+    try {
+      const stored = localStorage.getItem(this.STORAGE_KEY);
+      if (stored) {
+        const parsed = JSON.parse(stored) as WorkCenterDocument[];
+        // Validate that parsed data is an array
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          this._workCenters.set(parsed);
+          return;
+        }
+      }
+    } catch (error) {
+      console.warn('Failed to load work centers from localStorage:', error);
+    }
+
+    // Fallback to sample data if localStorage is empty or invalid
+    this.initializeSampleData();
+  }
+
+  /**
+   * Save work centers to localStorage
+   */
+  private saveToStorage(centers: WorkCenterDocument[]): void {
+    try {
+      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(centers));
+    } catch (error) {
+      console.error('Failed to save work centers to localStorage:', error);
+    }
+  }
+
   /**
    * Initialize with sample work centers
+   * This will also trigger localStorage save via effect()
    */
   initializeSampleData(): void {
     const sampleWorkCenters: WorkCenterDocument[] = [
@@ -45,6 +94,13 @@ export class WorkCenterService {
     ];
 
     this._workCenters.set(sampleWorkCenters);
+  }
+
+  /**
+   * Clear all work centers and reset to sample data
+   */
+  resetToSampleData(): void {
+    this.initializeSampleData();
   }
 
   /**

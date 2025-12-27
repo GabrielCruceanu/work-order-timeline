@@ -1,71 +1,50 @@
+@use "../../../../../../styles/abstracts/variables" as *;
+
 .zoom-control {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: $space-2; // 8px
+  width: 100%;
+
+  @media (min-width: $breakpoint-md) {
+    gap: $space-3; // 12px
+    width: auto;
+  }
 
   &__label {
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: #212529;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-normal;
+    color: $color-text-secondary;
     white-space: nowrap;
+    border-radius: 5px 0px 0px 5px;
+    background-color: rgba(241, 243, 248, 0.75);
+    padding: $space-1 $space-2;
+
+    @media (min-width: $breakpoint-md) {
+      font-size: $font-size-sm;
+    }
   }
 
   &__select {
     width: 140px;
-
     // Override ng-select default styles to match design
     ::ng-deep {
       .ng-select {
         .ng-select-container {
-          height: 36px;
-          min-height: 36px;
-          padding: 8px 12px;
-          background: #ffffff;
-          border: 1px solid #dee2e6;
-          border-radius: 6px;
-          font-size: 0.875rem;
-          font-weight: 500;
-          color: #212529;
-          transition: all 0.15s ease;
-
-          &:hover {
-            border-color: #adb5bd;
-            background: #f8f9fa;
-          }
-
-          .ng-value-container {
-            padding: 0;
-
-            .ng-value {
-              color: #212529;
-              font-size: 0.875rem;
-              font-weight: 500;
-            }
-
-            .ng-placeholder {
-              color: #6c757d;
-              font-size: 0.875rem;
-            }
-          }
-
-          .ng-arrow-wrapper {
-            width: 20px;
-            padding-right: 0;
-
-            .ng-arrow {
-              border-color: #6c757d transparent transparent;
-              border-style: solid;
-              border-width: 5px 4px 0;
-              height: 0;
-              width: 0;
-              transition: transform 0.2s ease;
-            }
-          }
+          width: 80px;
+          height: 25px;
+          border-radius: 0px 5px 5px 0px;
+          border: 1px solid $color-border;
+          background-color: $color-background;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: $space-2 $space-4;
         }
 
         &.ng-select-opened {
           .ng-select-container {
-            border-color: #5659ff;
+            border-color: $color-border-focus;
             box-shadow: 0 0 0 3px rgba(86, 89, 255, 0.1);
 
             .ng-arrow-wrapper .ng-arrow {
@@ -76,39 +55,37 @@
 
         &.ng-select-focused:not(.ng-select-opened) {
           .ng-select-container {
-            border-color: #5659ff;
+            border-color: $color-border-focus;
             box-shadow: 0 0 0 3px rgba(86, 89, 255, 0.1);
           }
         }
       }
 
       .ng-dropdown-panel {
-        background: #ffffff;
-        border: 1px solid #dee2e6;
-        border-radius: 6px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        background: $color-background;
+        border: 1px solid $color-border;
+        border-radius: $radius-md;
+        box-shadow: $shadow-dropdown;
         margin-top: 4px;
+        padding: $space-1;
         z-index: 100;
 
         .ng-dropdown-panel-items {
           .ng-option {
-            padding: 10px 12px;
-            font-size: 0.875rem;
-            color: #212529;
-            transition: background 0.15s ease;
+            padding: $space-2 $space-4;
+            font-size: $font-size-sm;
+            color: $color-text-primary;
+            border-radius: $radius-sm;
+            transition: $transition-colors;
 
-            &:hover {
-              background: #f1f3f5;
+            &:hover,
+            &.ng-option-marked {
+              background: $color-background-hover;
             }
 
             &.ng-option-selected {
-              background: #e7f5ff;
-              color: #5659ff;
-              font-weight: 500;
-            }
-
-            &.ng-option-marked {
-              background: #f1f3f5;
+              color: $color-primary;
+              font-weight: $font-weight-medium;
             }
           }
         }

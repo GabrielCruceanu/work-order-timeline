@@ -10,10 +10,15 @@
 @use "./styles/base/typography";
 
 // Components
-// Component-specific styles will be imported here as needed
+@use "./styles/components/form-field";
+@use "./styles/components/datepicker";
+@use "./styles/components/dropdown";
 
 // Utilities
 @use "./styles/utilities/helpers";
 
-// Font import (CSS @import for external URLs - must come after @forward/@use)
+/* Importing Bootstrap SCSS file. */
+@use "bootstrap/scss/bootstrap";
+
+// Font import (CSS @import for external URLs - must come after all @use rules)
 @import url("https://naologic-com-assets.naologic.com/fonts/circular-std/circular-std.css");

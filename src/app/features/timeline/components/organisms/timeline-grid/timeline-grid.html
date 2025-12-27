@@ -1,5 +1,11 @@
 <div class="timeline-grid">
   <div #leftPanel class="timeline-grid__left-panel" (scroll)="onLeftPanelScroll($event)">
+    <div class="timeline-grid__work-center-header timeline-grid__work-center-header--work-center">
+      <span
+        class="timeline-grid__work-center-header-text timeline-grid__work-center-header-text--work-center"
+        >Work Center</span
+      >
+    </div>
     @for (workCenter of workCenters(); track workCenter.docId) {
       <div class="timeline-grid__work-center-row">
         <span class="timeline-grid__work-center-name">{{ workCenter.data.name }}</span>
