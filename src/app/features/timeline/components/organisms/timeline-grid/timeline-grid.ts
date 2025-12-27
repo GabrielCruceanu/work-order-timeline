@@ -43,6 +43,7 @@ export class TimelineGridComponent {
 
   // Signal outputs
   workOrderSelected = output<WorkOrderDocument>();
+  workOrderEdit = output<WorkOrderDocument>();
   emptySlotClicked = output<{ workCenterId: string; date: Date }>();
 
   // Local state
@@ -255,12 +256,12 @@ export class TimelineGridComponent {
 
   // Handle bar events
   onWorkOrderEdit(workOrder: WorkOrderDocument) {
-    // TODO: Open edit panel (Phase 5)
-    console.log('Edit work order:', workOrder);
+    this.workOrderEdit.emit(workOrder);
   }
 
   onWorkOrderDelete(workOrder: WorkOrderDocument) {
-    // TODO: Implement delete (Phase 6)
+    // Delete is handled directly in the timeline component
+    // This method can be used if needed for direct deletion
     console.log('Delete work order:', workOrder);
   }
 
