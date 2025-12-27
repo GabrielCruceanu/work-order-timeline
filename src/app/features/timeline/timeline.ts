@@ -13,7 +13,7 @@ import { WorkOrderService } from '@/app/core/services/work-order.service';
   imports: [TimelineHeaderComponent, TimelineGridComponent],
   template: `
     <div class="timeline">
-      <app-timeline-header (timescaleChanged)="timescaleChanged($event)" />
+      <app-timeline-header [currentZoom]="zoomLevel()" (zoomChanged)="onZoomChanged($event)" />
       <app-timeline-grid
         [workCenters]="workCenterService.workCenters()"
         [workOrders]="workOrderService.workOrders()"
@@ -44,7 +44,7 @@ export class TimelineComponent {
     this.workOrderService.initializeSampleData();
   }
 
-  protected timescaleChanged(event: ZoomLevel) {
-    this.zoomLevel.set(event);
+  protected onZoomChanged(zoom: ZoomLevel) {
+    this.zoomLevel.set(zoom);
   }
 }

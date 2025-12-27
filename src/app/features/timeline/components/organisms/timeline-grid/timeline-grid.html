@@ -8,7 +8,7 @@
   </div>
   <div class="timeline-grid__right-panel">
     <div class="timeline-grid__header">
-      @for (column of gridColumns(); track column.date.getTime()) {
+      @for (column of gridColumns(); track trackColumn(column)) {
         <div class="timeline-grid__column" [style.width.px]="column.width">
           {{ column.label }}
         </div>

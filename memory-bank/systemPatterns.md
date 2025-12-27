@@ -170,13 +170,62 @@ type WorkOrderStatus = 'open' | 'in-progress' | 'complete' | 'blocked';
 
 ### Zoom Level Handling
 
-- Day view: Shows individual days in header (120px per column)
-- Week view: Shows weeks in header (140px per column)
-- Month view: Shows months in header (180px per column)
+- Day view: Shows individual days in header (120px per column), format "Mon 12/25"
+- Week view: Shows weeks in header (180px per column), format "W48: Nov 24 - Nov 30"
+- Month view: Shows months in header (180px per column), format "December 2025"
 - All zoom levels show same data, just different scales
 - Recalculate column widths on zoom change via computed signals
 - Date range automatically adjusts based on zoom level
 - Column labels format differently per zoom level using `formatDate()` utility
+- Use track function in @for loop that includes zoom level to ensure proper DOM updates
+
+### Dropdown Component Pattern
+
+**Implementation Pattern**:
+
+- Signal-based state management (`isOpen = signal(false)`)
+- Click-outside handler using `@HostListener('document:click')`
+- Computed signal for current label display
+- Accessibility attributes (aria-expanded, aria-label, role="menu", role="menuitem", aria-selected)
+- Smooth animations (slideDown keyframe animation)
+- BEM naming convention
+
+**Key Pattern**:
+
+```typescript
+@HostListener('document:click', ['$event'])
+onClickOutside(event: MouseEvent) {
+  const target = event.target as Node;
+  const clickedInside = this.elementRef.nativeElement.contains(target);
+  if (!this.isOpen() || clickedInside) return;
+  this.isOpen.set(false);
+}
+```
+
+### @for Loop Tracking Pattern
+
+**Problem**: When computed signals change, Angular may not update DOM elements correctly if tracking function doesn't account for all relevant properties.
+
+**Solution**: Create track function that includes all properties that affect rendering:
+
+```typescript
+// In component
+trackColumn(column: DateColumn): string {
+  return `${this.zoomLevel()}-${column.date.getTime()}-${column.width}`;
+}
+
+// In template
+@for (column of gridColumns(); track trackColumn(column)) {
+  <div [style.width.px]="column.width">{{ column.label }}</div>
+}
+```
+
+**Key Points**:
+
+- Include all properties that affect rendering in track function
+- Use string concatenation for multiple values
+- Ensures Angular creates new DOM elements when properties change
+- Prevents stale style bindings
 
 ## Component Responsibilities
 
@@ -219,6 +268,31 @@ type WorkOrderStatus = 'open' | 'in-progress' | 'complete' | 'blocked';
 3. **Edit Flow**: Click menu → Open panel → Populate form → Modify → Validate → Save → Update timeline
 4. **Delete Flow**: Click menu → Confirm → Remove from data → Update timeline
 5. **Zoom Change**: Select zoom level → Recalculate columns → Re-render timeline
+
+### Signal Flow for UI Controls
+
+**Pattern**: Component → Organism → Page → Feature
+
+Example: Zoom Control Flow
+
+```
+ZoomControlComponent (molecule)
+  ↓ zoomChanged event
+TimelineHeaderComponent (organism)
+  ↓ zoomChanged event
+TimelineComponent (page)
+  ↓ updates zoomLevel signal
+TimelineGridComponent (organism)
+  ↓ recomputes columns based on zoomLevel
+```
+
+**Key Points**:
+
+- Use signal inputs (`input()`) for data flowing down
+- Use signal outputs (`output()`) for events flowing up
+- Page component manages state with signals
+- Child components react to signal changes via computed signals
+- OnPush change detection ensures efficient updates
 
 ## 📁 Project Structure
 
