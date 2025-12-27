@@ -94,14 +94,21 @@
 - [x] Integration with Timeline page
 - [x] Delete functionality with confirmation
 
-### Phase 6: Interactions (Not Started)
+### Phase 6: Interactions (✅ Complete)
 
-- [ ] Click empty area to create
-- [ ] Three-dot menu dropdown
-- [ ] Edit action
-- [ ] Delete action
-- [ ] Panel close behaviors
-- [ ] Row hover states
+- [x] Click empty area to create
+- [x] Three-dot menu dropdown (implemented in Phase 4)
+- [x] Edit action (implemented in Phase 4)
+- [x] Delete action (implemented in Phase 5)
+- [x] Panel close behaviors (implemented in Phase 5)
+- [x] Row hover states
+- [x] Click position to date calculation (all zoom levels)
+- [x] Empty cell click detection
+- [x] Visual hover feedback on timeline rows
+- [x] NgbTooltip integration for UX hints
+- [x] Keyboard shortcuts (N for new, ESC for close)
+- [x] Event flow: Grid → Timeline Page → Panel
+- [x] Prefilled data flows correctly
 
 ### Phase 7: Polish (Not Started)
 
@@ -132,11 +139,11 @@
 
 ## Current Status
 
-**Status**: Phase 5 Complete - Create/Edit Panel Implemented
+**Status**: Phase 6 Complete - Interactions Implemented
 
-**Completion**: ~70% (Phase 1 + Phase 2 + Phase 3 + Phase 4 + Phase 5 complete)
+**Completion**: ~85% (Phase 1 + Phase 2 + Phase 3 + Phase 4 + Phase 5 + Phase 6 complete)
 
-**Next Milestone**: Phase 6 - Interactions - Click empty area to create, improve edit/delete flows
+**Next Milestone**: Phase 7 - Polish - Match design images pixel-perfect, add final styling touches
 
 ## Known Issues
 
@@ -163,11 +170,10 @@ None currently.
 
 ## Bonus Features (Optional - After Core)
 
+- [x] Keyboard navigation (N key for new, ESC for close)
+- [x] Tooltip on empty cell hover (NgbTooltip)
 - [ ] localStorage persistence
 - [ ] Automated test suite
-- [ ] Smooth animations/transitions
-- [ ] Keyboard navigation
 - [ ] Infinite scroll
 - [ ] "Today" button
-- [ ] Tooltip on bar hover
 - [ ] Accessibility features
